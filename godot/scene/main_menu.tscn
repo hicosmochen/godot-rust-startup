@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://vmuc112w8dfk"]
+
+[node name="MainMenu" type="Node2D" unique_id=1996234316]
+
+[node name="ColorRect" type="MainMenu" parent="." unique_id=775549032]
+offset_right = 1280.0
+offset_bottom = 80.0
+color = Color(3.723037e-05, 3.723037e-05, 3.7230366e-05, 1)

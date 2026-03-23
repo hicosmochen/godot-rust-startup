@@ -1,0 +1,34 @@
+[gd_resource type="Theme" format=3 uid="uid://cah32uqeubl0p"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ihdej"]
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ektgf"]
+bg_color = Color(0.9446454, 0.24801645, 0.8498498, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 3
+
+[resource]
+MenuButton/colors/font_color = Color(1, 1, 1, 1)
+MenuButton/colors/font_disabled_color = Color(1, 1, 1, 1)
+MenuButton/colors/font_focus_color = Color(0.8, 0.24705882, 0.25490198, 1)
+MenuButton/colors/font_hover_color = Color(0.8009449, 0.24739191, 0.2531071, 1)
+MenuButton/colors/font_pressed_color = Color(0.8, 0.24705882, 0.25490198, 1)
+MenuButton/font_sizes/font_size = 24
+MenuButton/fonts/font = null
+PopupMenu/colors/font_color = Color(1, 1, 1, 1)
+PopupMenu/colors/font_hover_color = Color(0, 0, 0, 1)
+PopupMenu/constants/item_end_padding = 50
+PopupMenu/constants/item_start_padding = 2
+PopupMenu/constants/v_separation = 8
+PopupMenu/font_sizes/font_size = 24
+PopupMenu/fonts/font = null
+PopupMenu/styles/hover = SubResource("StyleBoxFlat_ihdej")
+PopupMenu/styles/panel = SubResource("StyleBoxFlat_ektgf")

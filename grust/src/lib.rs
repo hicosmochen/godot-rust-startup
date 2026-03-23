@@ -5,4 +5,4 @@ struct MyExtension;
 unsafe impl ExtensionLibrary for MyExtension {
 }
 
-// mod player;
+mod menu;
