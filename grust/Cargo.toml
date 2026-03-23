@@ -1,0 +1,10 @@
+[package]
+name = "grust"       # rust 所在的文件夹名称, 因为我的名称是 myrust 所以写的是 myrust
+version = "0.1.0"    # 当前编辑的版本
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib"]  # 这里是必须添加的一句话, 创建一个动态库，并在其中公开一个 C 语言接口
+
+[dependencies]
+godot = "0.4.5"
