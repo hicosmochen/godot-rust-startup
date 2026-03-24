@@ -3,7 +3,7 @@ use godot::classes::{ColorRect, IColorRect, MenuButton, Theme, DisplayServer}; /
 use godot::classes::Os;
 use godot::classes::os::SystemDir;
 // 记得导入你的自定义类
-use crate::menu::MyFileDialog::MyFileDialog;
+use crate::menu::my_file_dialog::MyFileDialog;
 
 
 
@@ -127,7 +127,11 @@ impl MainMenu {
                 self.open_dir_dialog(r"选择rust的 cargo\bin 路径".to_string())
             },
             3001 => godot_print!("点击了：rust版本信息"),
-            3002 => godot_print!("点击了：rust帮助文档"),
+            3002 => {
+                godot_print!("点击了：rust帮助文档");
+                let url = "https://blog.csdn.net/ShiShiLunHui/article/details/159385949?spm=1011.2415.3001.5331".to_string();
+                self.open_url(url);
+            },
             3003 => godot_print!("点击了：rust联系作者"),
             4001 => {
                 godot_print!("点击了：最小化窗口");
@@ -241,5 +245,16 @@ impl MainMenu {
         self.base_mut().add_child(&dialog_node);
         // 5. 弹出
         dialog.bind_mut().open_dialog();
+    }
+
+
+    #[func]
+    pub fn open_url(&self, url: String) {
+        // 1. 获取 OS 单例
+        let mut os = Os::singleton();
+        // 2. 调用 shell_open
+        // 注意：shell_open 接收的是 GString
+        os.shell_open(&url);
+        godot_print!("正在尝试打开网址...");
     }
 }

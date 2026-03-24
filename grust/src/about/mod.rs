@@ -1,3 +1,3 @@
 // 使用 pub 关键字使其对外部（如 main.rs）可见
-pub mod main_menu;
-pub mod my_file_dialog;
+pub mod about_version_text;
+// pub mod AboutVersionIcon;
