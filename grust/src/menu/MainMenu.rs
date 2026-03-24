@@ -119,9 +119,13 @@ impl MainMenu {
             1001 => {
                 godot_print!("点击了：Godot启动文件");
                 // 启动文件类型的对话框
-                self.open_file_dialog()
+                self.open_file_dialog(r"选择godot的启动文件exe".to_string())
             },
-            1002 => godot_print!("点击了：rust安装路径"),
+            1002 => {
+                godot_print!("点击了：rust安装路径");
+                // 启动文件夹类型的对话框
+                self.open_dir_dialog(r"选择rust的 cargo\bin 路径".to_string())
+            },
             3001 => godot_print!("点击了：rust版本信息"),
             3002 => godot_print!("点击了：rust帮助文档"),
             3003 => godot_print!("点击了：rust联系作者"),
@@ -161,9 +165,34 @@ impl MainMenu {
     }
 
 
+
+        // 打开文件的对话框
+    #[func]
+    fn open_dir_dialog(&mut self, &title: String){
+        // 1. 动态实例化 使用新的 API 名称：from_init_fn
+        let mut dialog = Gd::<MyFileDialog>::from_init_fn( |base|{
+            MyFileDialog { base }
+        });
+
+        // 2. 设置 Godot 属性（可选）  current_dir
+        dialog.set_access(godot::classes::file_dialog::Access::FILESYSTEM);
+        dialog.set_file_mode(godot::classes::file_dialog::FileMode::OPEN_DIR);
+        dialog.set_title(&title);
+        dialog.set_use_native_dialog(true);
+
+        let docs_path = godot::classes::Os::singleton().get_system_dir(SystemDir::DOCUMENTS);
+        dialog.set_current_dir(&docs_path);
+        // 3. 必须先加入场景树
+        let dialog_node = dialog.clone().upcast::<Node>();
+        self.base_mut().add_child(&dialog_node);
+        // 4. 弹出
+        dialog.bind_mut().open_dialog();
+    }
+
+
     // 打开文件的对话框
     #[func]
-    fn open_file_dialog(&mut self){
+    fn open_file_dialog(&mut self, &title: String){
         // 1. 动态实例化 使用新的 API 名称：from_init_fn
         let mut dialog = Gd::<MyFileDialog>::from_init_fn( |base|{
             MyFileDialog { base }
@@ -202,6 +231,7 @@ impl MainMenu {
         // 3. 设置 Godot 属性（可选）  current_dir
         dialog.set_access(godot::classes::file_dialog::Access::FILESYSTEM);
         dialog.set_file_mode(godot::classes::file_dialog::FileMode::OPEN_FILE);
+        dialog.set_title(&title);
         dialog.set_use_native_dialog(true);
 
         let docs_path = godot::classes::Os::singleton().get_system_dir(SystemDir::DOCUMENTS);
