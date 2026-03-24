@@ -1,5 +1,11 @@
 use godot::prelude::*;
-use godot::classes::{ColorRect, IColorRect, MenuButton, PopupMenu, Theme, DisplayServer}; // 导入需要的 UI 类
+use godot::classes::{ColorRect, IColorRect, MenuButton, Theme, DisplayServer}; // 导入需要的 UI 类
+use godot::classes::Os;
+use godot::classes::os::SystemDir;
+// 记得导入你的自定义类
+use crate::menu::MyFileDialog::MyFileDialog;
+
+
 
 #[derive(GodotClass)]
 #[class(base=ColorRect)] 
@@ -110,7 +116,11 @@ impl MainMenu {
     #[func]
     fn on_menu_item_pressed(&mut self, id: i64) {
         match id {
-            1001 => godot_print!("点击了：Godot启动文件"),
+            1001 => {
+                godot_print!("点击了：Godot启动文件");
+                // 启动文件类型的对话框
+                self.open_file_dialog()
+            },
             1002 => godot_print!("点击了：rust安装路径"),
             3001 => godot_print!("点击了：rust版本信息"),
             3002 => godot_print!("点击了：rust帮助文档"),
@@ -148,5 +158,58 @@ impl MainMenu {
         let mut ds = DisplayServer::singleton();
         ds.window_set_mode(godot::classes::display_server::WindowMode::MAXIMIZED);
         godot_print!("窗口已最大化");
+    }
+
+
+    // 打开文件的对话框
+    #[func]
+    fn open_file_dialog(&mut self){
+        // 1. 动态实例化 使用新的 API 名称：from_init_fn
+        let mut dialog = Gd::<MyFileDialog>::from_init_fn( |base|{
+            MyFileDialog { base }
+        });
+
+        // 2. 设置过滤器
+        // 格式说明："*.扩展名 ; 描述" 
+        // 注意：分号前后可以有空格，Godot 会自动解析
+        let mut filters = PackedStringArray::new();
+
+        let os = Os::singleton();
+        let name = os.get_name().to_string(); // 获取系统名称字符串
+
+        match name.as_str() {
+            "Windows" => {
+                filters.push("*.exe ; Windows 可执行文件"); 
+            },
+            "macOS" => {
+                filters.push("*.app ; macOS 可执行文件"); 
+            },
+            "Linux" | "FreeBSD" | "NetBSD" | "OpenBSD" | "BSD" => {
+                filters.push("*.so ;  Linux 可执行文件"); 
+            },
+            "Android" => {
+                filters.push("*.apk ; Android 可执行文件"); 
+                filters.push("*.dex ; Android 可执行文件"); 
+            },
+            "iOS" => {
+                filters.push("*.ipa ; IOS 可执行文件"); 
+                filters.push("*.app ; IOS 可执行文件"); 
+            },
+            _ => godot_print!("未知系统: {}", name),
+        }
+        dialog.set_filters(&filters);
+
+        // 3. 设置 Godot 属性（可选）  current_dir
+        dialog.set_access(godot::classes::file_dialog::Access::FILESYSTEM);
+        dialog.set_file_mode(godot::classes::file_dialog::FileMode::OPEN_FILE);
+        dialog.set_use_native_dialog(true);
+
+        let docs_path = godot::classes::Os::singleton().get_system_dir(SystemDir::DOCUMENTS);
+        dialog.set_current_dir(&docs_path);
+        // 4. 必须先加入场景树
+        let dialog_node = dialog.clone().upcast::<Node>();
+        self.base_mut().add_child(&dialog_node);
+        // 5. 弹出
+        dialog.bind_mut().open_dialog();
     }
 }
