@@ -6,7 +6,6 @@ use godot::classes::os::SystemDir;
 use crate::menu::my_file_dialog::MyFileDialog;
 
 
-
 #[derive(GodotClass)]
 #[class(base=ColorRect)] 
 pub struct MainMenu {

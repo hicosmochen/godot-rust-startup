@@ -7,3 +7,4 @@ unsafe impl ExtensionLibrary for MyExtension {
 
 mod menu;
 mod about;
+mod secure;
