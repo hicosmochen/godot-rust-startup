@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://beo7gg8ev6pxv"]
 
-[node name="MainBody" type="Node2D" unique_id=63685105]
+[node name="AboutVersion" type="Node2D" unique_id=63685105]
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=381847393]
 offset_top = 80.0

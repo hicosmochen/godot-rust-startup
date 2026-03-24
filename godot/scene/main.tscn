@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://c0o2mrgrotafn"]
 
 [ext_resource type="PackedScene" uid="uid://vmuc112w8dfk" path="res://scene/main_menu.tscn" id="1_itxqv"]
-[ext_resource type="PackedScene" uid="uid://beo7gg8ev6pxv" path="res://scene/main_body.tscn" id="2_v0l8b"]
+[ext_resource type="PackedScene" uid="uid://cnmbj6ab82xrk" path="res://scene/main_default.tscn" id="2_v0l8b"]
 
 [node name="Main" type="Node2D" unique_id=685400162]
 
-[node name="MainMenu" parent="." unique_id=1996234316 instance=ExtResource("1_itxqv")]
+[node name="MainDefault" parent="." unique_id=752177968 instance=ExtResource("2_v0l8b")]
 
-[node name="MainBody" parent="." unique_id=63685105 instance=ExtResource("2_v0l8b")]
+[node name="MainMenu" parent="." unique_id=1996234316 instance=ExtResource("1_itxqv")]

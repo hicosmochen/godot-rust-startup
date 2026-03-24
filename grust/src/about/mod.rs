@@ -1,3 +1,3 @@
 // 使用 pub 关键字使其对外部（如 main.rs）可见
 pub mod about_version_text;
-// pub mod AboutVersionIcon;
+pub mod about_author_text;

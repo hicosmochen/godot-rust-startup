@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://cnmbj6ab82xrk"]
+
+[node name="MainDefault" type="Node2D" unique_id=752177968]
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1048667836]
+offset_top = 80.0
+offset_right = 1280.0
+offset_bottom = 800.0
+color = Color(0.50534403, 0.5053441, 0.50534403, 1)
+metadata/_edit_lock_ = true
+
+[node name="Label" type="Label" parent="ColorRect" unique_id=1857649833]
+layout_mode = 0
+offset_top = 300.0
+offset_right = 1280.0
+offset_bottom = 400.0
+theme_override_font_sizes/font_size = 48
+text = "自制 GODOT - RUST 模板工具"
+horizontal_alignment = 1
+vertical_alignment = 1

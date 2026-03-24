@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://oyj6woltk3ta"]
+
+[node name="AboutAuthor" type="Node2D" unique_id=1148767724]
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=116900737]
+offset_top = 80.0
+offset_right = 1280.0
+offset_bottom = 800.0
+metadata/_edit_lock_ = true
+
+[node name="AboutVersionText" type="AboutAuthorText" parent="ColorRect" unique_id=1445675648]
+layout_mode = 0
+offset_top = 300.0
+offset_right = 1280.0
+offset_bottom = 380.0
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true

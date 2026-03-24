@@ -88,12 +88,30 @@ impl IColorRect for MainMenu {
             &(self.base().callable("on_menu_item_pressed"))
         );
 
+        // 菜单配置被点击
+        menu_button_config.connect(
+             "pressed", 
+            &(self.base().callable("on_menu_config_pressed"))
+        );
 
+        // 菜单项目被点击 menu_button_about
         menu_button_project.connect(
             "pressed", 
             &(self.base().callable("on_menu_project_pressed"))
         );
 
+        // 菜单关于被点击
+        menu_button_about.connect(
+            "pressed", 
+            &(self.base().callable("on_menu_about_pressed"))
+        );
+
+        // 菜单退出被点击
+        menu_button_exit.connect(
+            "pressed", 
+            &(self.base().callable("on_menu_exit_pressed"))
+        );
+     
 
         // 5、将 menu_button_config 添加到自身中
         self.base_mut().add_child(&menu_button_config);
@@ -126,13 +144,19 @@ impl MainMenu {
                 // 启动文件夹类型的对话框
                 self.open_dir_dialog(r"选择rust的 cargo\bin 路径".to_string())
             },
-            3001 => godot_print!("点击了：rust版本信息"),
+            3001 => {
+                godot_print!("点击了：rust版本信息");
+                self.append_to_scene("about_version".to_string());
+            },
             3002 => {
                 godot_print!("点击了：rust帮助文档");
                 let url = "https://blog.csdn.net/ShiShiLunHui/article/details/159385949?spm=1011.2415.3001.5331".to_string();
                 self.open_url(url);
             },
-            3003 => godot_print!("点击了：rust联系作者"),
+            3003 => {
+                godot_print!("点击了：rust联系作者");
+                 self.append_to_scene("about_author".to_string());
+            },
             4001 => {
                 godot_print!("点击了：最小化窗口");
                 self.minimize_window()
@@ -148,9 +172,29 @@ impl MainMenu {
     }
 
     #[func]
+    fn on_menu_config_pressed(&mut self){
+         godot_print!("点击了：环境配置");
+         self.append_to_scene("main_default".to_string());
+    }
+
+    #[func]
     fn on_menu_project_pressed(&mut self){
          godot_print!("点击了：创建项目");
+         self.append_to_scene("main_default".to_string());
     }
+
+    #[func]
+    fn on_menu_about_pressed(&mut self){
+         godot_print!("点击了：关于软件");
+         self.append_to_scene("main_default".to_string());
+    }
+
+    #[func]
+    fn on_menu_exit_pressed(&mut self){
+         godot_print!("点击了：退出软件");
+         self.append_to_scene("main_default".to_string());
+    }
+
 
     // 窗口最小化
     #[func]
@@ -170,7 +214,7 @@ impl MainMenu {
 
 
 
-        // 打开文件的对话框
+    // 打开文件的对话框
     #[func]
     fn open_dir_dialog(&mut self, &title: String){
         // 1. 动态实例化 使用新的 API 名称：from_init_fn
@@ -256,5 +300,34 @@ impl MainMenu {
         // 注意：shell_open 接收的是 GString
         os.shell_open(&url);
         godot_print!("正在尝试打开网址...");
+    }
+
+
+    // 添加场景到当前场景中
+    #[func]
+    fn append_to_scene(&mut self, scene_name: String) {
+        let path = format!("res://scene/{}.tscn", scene_name);
+        
+        // 1. 加载场景资源
+        let pack_scene = load::<PackedScene>(&path);
+        // 2. 实例化场景 （返回的是 Option<Gd<Node>>）
+        if let Some(new_scene) = pack_scene.instantiate(){
+            // 3. 将新节点添加为当前节点的子节点
+            self.base_mut().add_child(&new_scene)
+        }
+    }
+
+
+    // 切换整个场景
+    #[func]
+    fn change_to_scene(&mut self, scene_name: String) {
+        let path = format!("res://scene/{}.tscn", scene_name);
+        
+        // 1. 加载场景资源
+        let new_scene = load::<PackedScene>(&path);
+        // 2. 获取Tree 并且切换
+        if let Some(mut tree) = self.base().get_tree(){
+            tree.change_scene_to_packed(&new_scene);
+        }
     }
 }
