@@ -4,7 +4,7 @@ use godot::classes::Os;
 use godot::classes::os::SystemDir;
 // 记得导入你的自定义类
 use crate::menu::my_file_dialog::MyFileDialog;
-
+use crate::secure::secure_storage::SecureStorage;
 
 #[derive(GodotClass)]
 #[class(base=ColorRect)] 
@@ -180,6 +180,11 @@ impl MainMenu {
     fn on_menu_project_pressed(&mut self){
          godot_print!("点击了：创建项目");
          self.append_to_scene("main_default".to_string());
+         // 在这里获取一下存储的数据
+         let current_path_godot = SecureStorage::get("path_godot");
+         let current_path_rust = SecureStorage::get("path_rust");
+         godot_print!("path_godot 路径: {}", current_path_godot);
+         godot_print!("path_rust 路径: {}", current_path_rust);
     }
 
     #[func]
@@ -218,7 +223,7 @@ impl MainMenu {
     fn open_dir_dialog(&mut self, &title: String){
         // 1. 动态实例化 使用新的 API 名称：from_init_fn
         let mut dialog = Gd::<MyFileDialog>::from_init_fn( |base|{
-            MyFileDialog { base }
+            MyFileDialog { base, kind:"path_rust".to_string() }
         });
 
         // 2. 设置 Godot 属性（可选）  current_dir
@@ -242,7 +247,7 @@ impl MainMenu {
     fn open_file_dialog(&mut self, &title: String){
         // 1. 动态实例化 使用新的 API 名称：from_init_fn
         let mut dialog = Gd::<MyFileDialog>::from_init_fn( |base|{
-            MyFileDialog { base }
+            MyFileDialog { base, kind:"path_godot".to_string() }
         });
 
         // 2. 设置过滤器
@@ -279,7 +284,7 @@ impl MainMenu {
         dialog.set_access(godot::classes::file_dialog::Access::FILESYSTEM);
         dialog.set_file_mode(godot::classes::file_dialog::FileMode::OPEN_FILE);
         dialog.set_title(&title);
-        dialog.set_use_native_dialog(true);
+        dialog.set_use_native_dialog(true); 
 
         let docs_path = godot::classes::Os::singleton().get_system_dir(SystemDir::DOCUMENTS);
         dialog.set_current_dir(&docs_path);
