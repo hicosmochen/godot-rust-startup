@@ -45,6 +45,7 @@ theme_override_font_sizes/font_size = 40
 text = "选择工作空间"
 
 [node name="ProjectButton_02" type="ProjectButton" parent="ColorRect" unique_id=218071344]
+kind = 1
 layout_mode = 0
 offset_left = 26.0
 offset_top = 200.0
@@ -54,6 +55,7 @@ theme_override_font_sizes/font_size = 40
 text = "RUST根目录名"
 
 [node name="ProjectButton_03" type="ProjectButton" parent="ColorRect" unique_id=1075447110]
+kind = 2
 layout_mode = 0
 offset_left = 26.0
 offset_top = 323.0
@@ -63,6 +65,7 @@ theme_override_font_sizes/font_size = 40
 text = "gdext 名称"
 
 [node name="ProjectButton_04" type="ProjectButton" parent="ColorRect" unique_id=763152581]
+kind = 3
 layout_mode = 0
 offset_left = 26.0
 offset_top = 447.0
@@ -72,6 +75,7 @@ theme_override_font_sizes/font_size = 40
 text = "需要创建案例"
 
 [node name="ProjectButton_05" type="ProjectButton" parent="ColorRect" unique_id=1476287607]
+kind = 4
 layout_mode = 0
 offset_left = 26.0
 offset_top = 565.0
