@@ -218,7 +218,7 @@ impl MainMenu {
 
 
 
-    // 打开文件的对话框
+    // 打开文件夹的对话框
     #[func]
     fn open_dir_dialog(&mut self, &title: String){
         // 1. 动态实例化 使用新的 API 名称：from_init_fn
