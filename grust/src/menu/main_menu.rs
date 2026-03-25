@@ -179,7 +179,7 @@ impl MainMenu {
     #[func]
     fn on_menu_project_pressed(&mut self){
          godot_print!("点击了：创建项目");
-         self.append_to_scene("main_default".to_string());
+         self.append_to_scene("main_project".to_string());
          // 在这里获取一下存储的数据
          let current_path_godot = SecureStorage::get("path_godot");
          let current_path_rust = SecureStorage::get("path_rust");
