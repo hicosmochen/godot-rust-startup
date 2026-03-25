@@ -21,6 +21,7 @@ pub enum ButtonKind {
     NeedCreateDemo,
     StartCreatProject,
     Cancel,
+    CancelCreatDemo,
     ConfirmPathRust,
     ConfirmNameGdext,
     ConfirmCreatDemo,
@@ -72,37 +73,23 @@ impl ProjectButton {
                 self.open_dir_dialog(r"选择工作空间".to_string())
             },
             ButtonKind::RustRootPath => {
-                let scene_path = "res://scene/dialog_name_rust.tscn";
-                let scene = load::<PackedScene>(scene_path);
-                // 1. 实例化为 Node
-                let my_node = scene.instantiate_as::<Node>();
-
-                // 2. 获取场景树根节点 (Main Loop 的根 Window)
-                if let Some(mut root) = self.base().get_tree().and_then(|t| t.get_root()) {
-                    // 3. 将 Node 挂载到根部
-                    root.add_child(&my_node);
-                }
+                let scene_path = String::from("res://scene/dialog_name_rust.tscn");
+                self.create_dialog_by_scene(scene_path);
             },
-            ButtonKind::GdextFileName => {
-                let scene_path = "res://scene/dialog_name_gdext.tscn";
-                let scene = load::<PackedScene>(scene_path);
-                // 1. 实例化为 Node
-                let my_node = scene.instantiate_as::<Node>();
-
-                // 2. 获取场景树根节点 (Main Loop 的根 Window)
-                if let Some(mut root) = self.base().get_tree().and_then(|t| t.get_root()) {
-                    // 3. 将 Node 挂载到根部
-                    root.add_child(&my_node);
-                }
+            ButtonKind::GdextFileName => { 
+                let scene_path = String::from("res://scene/dialog_name_gdext.tscn");
+                self.create_dialog_by_scene(scene_path);
             },
-            ButtonKind::NeedCreateDemo => godot_print!("按钮被点击了...NeedCreateDemo"),
+            ButtonKind::NeedCreateDemo => { 
+                let scene_path = String::from("res://scene/dialog_create_demo.tscn");
+                self.create_dialog_by_scene(scene_path);
+            },
             ButtonKind::StartCreatProject => godot_print!("按钮被点击了...StartCreatProject"),
             ButtonKind::Cancel => {
                 // 关闭当前的场景
                 self.close_project_dialog();
             },
             ButtonKind::ConfirmPathRust => {
-                godot_print!("按钮被点击了...确认按钮");
                 // 1. 获取父节点
                 if let Some(parent) = self.base().get_parent() {
                     // 2. 尝试获取同级的 LineEdit
@@ -138,7 +125,6 @@ impl ProjectButton {
                 self.close_project_dialog();
             }
             ButtonKind::ConfirmNameGdext => {
-                godot_print!("按钮被点击了...确认按钮");
                 // 1. 获取父节点
                 if let Some(parent) = self.base().get_parent() {
                     // 2. 尝试获取同级的 LineEdit
@@ -174,7 +160,40 @@ impl ProjectButton {
                 self.close_project_dialog();
             }
             ButtonKind::ConfirmCreatDemo => {
-                godot_print!("按钮被点击了...确认创建案例");
+                //------------------------------------------------------------
+                // 构建配置对象
+                let mut config = ConfigFile::new_gd();
+                // 尝试加载旧配置（忽略“文件不存在”的错误，因为第一次运行肯定没有）
+                let _ = config.load("res://config.cfg"); 
+                config.set_value("Editor", "create_demo", &true.to_variant());
+                // 保存并检查结果
+                let result = config.save("res://config.cfg");
+                if result == Error::OK {
+                    self.send_message_to_rich(format!("创建案例项目: 是"));
+                } else {
+                    self.send_message_to_rich(format!("存储失败"));
+                }
+                //------------------------------------------------------------
+                // 关闭当前的场景
+                self.close_project_dialog();
+            }
+            ButtonKind::CancelCreatDemo => {
+                //------------------------------------------------------------
+                // 构建配置对象
+                let mut config = ConfigFile::new_gd();
+                // 尝试加载旧配置（忽略“文件不存在”的错误，因为第一次运行肯定没有）
+                let _ = config.load("res://config.cfg"); 
+                config.set_value("Editor", "create_demo", &false.to_variant());
+                // 保存并检查结果
+                let result = config.save("res://config.cfg");
+                if result == Error::OK {
+                    self.send_message_to_rich(format!("创建案例项目: 否"));
+                } else {
+                    self.send_message_to_rich(format!("存储失败"));
+                }
+                //------------------------------------------------------------
+                // 关闭当前的场景
+                self.close_project_dialog();
             }
         } 
     }
@@ -218,6 +237,21 @@ impl ProjectButton {
                         "on_add_log", 
                         &[message.to_variant()]
                     );
+    }
+
+
+    // 通过场景路径创建对话框
+    #[func]
+    pub fn create_dialog_by_scene(&mut self, scene_path: String){
+        let scene = load::<PackedScene>(&scene_path);
+        // 1. 实例化为 Node
+        let my_node = scene.instantiate_as::<Node>();
+
+        // 2. 获取场景树根节点 (Main Loop 的根 Window)
+        if let Some(mut root) = self.base().get_tree().and_then(|t| t.get_root()) {
+            // 3. 将 Node 挂载到根部
+            root.add_child(&my_node);
+        }
     }
 }
 
