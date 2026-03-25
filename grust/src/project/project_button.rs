@@ -1,9 +1,13 @@
 use godot::prelude::*;
-use godot::classes::{Button, IButton, PackedScene}; // 导入需要的 UI 类
+use godot::classes::{Button, IButton, PackedScene, LineEdit}; // 导入需要的 UI 类
 use godot::classes::os::SystemDir;
+use godot::classes::ConfigFile;  // 正确导入 配置文件信息
+use godot::global::Error;        // 正确导入 Godot 的全局错误枚举
+
 // 记得导入你的自定义类
 use crate::menu::my_file_dialog::MyFileDialog;
 use crate::project::project_richtext::ProjectRichTextLabel;
+
 
 // 定义 Button 的枚举类型, 让godot可以进行外部赋值（赋值的内容是指定的数据值）
 #[derive(GodotConvert, Var, Export, Default, Copy, Clone, Debug)]
@@ -17,6 +21,7 @@ pub enum ButtonKind {
     NeedCreateDemo,
     StartCreatProject,
     Cancel,
+    Confirm,
 }
 
 
@@ -81,10 +86,39 @@ impl ProjectButton {
             ButtonKind::StartCreatProject => godot_print!("按钮被点击了...StartCreatProject"),
             ButtonKind::Cancel => {
                 // 关闭当前的场景
-                let mut tree = self.base().get_tree().unwrap();
-                // 找到组内所有成员并销毁
-                tree.call_group("node_dialog", "queue_free", &[]);
+                self.close_project_dialog();
             },
+            ButtonKind::Confirm => {
+                godot_print!("按钮被点击了...确认按钮");
+                // 1. 获取父节点
+                if let Some(parent) = self.base().get_parent() {
+                    // 2. 尝试获取同级的 LineEdit
+                    // 注意："LineEdit" 必须与场景面板中的名称一致
+                    if let Some(line_edit) = parent.try_get_node_as::<LineEdit>("LineEdit") {
+                        // 3. 访问信息
+                        let text = line_edit.get_text();
+                        //------------------------------------------------------------
+                        // 构建配置对象
+                        let mut config = ConfigFile::new_gd();
+                        // 尝试加载旧配置（忽略“文件不存在”的错误，因为第一次运行肯定没有）
+                        let _ = config.load("res://config.cfg"); 
+                        config.set_value("Editor", "rust_name", &text.to_variant());
+                        // 保存并检查结果
+                        let result = config.save("res://config.cfg");
+                        if result == Error::OK {
+                            godot_print!("路径已成功保存: {}", text);
+                            self.send_message_to_rich(format!("RUST根目录名称: {text}"));
+                        } else {
+                            self.send_message_to_rich(format!("存储失败"));
+                        }
+                        //------------------------------------------------------------
+                    }else {
+                        godot_warn!("找不到名为 LineEdit 的同级节点");
+                    };   
+                }
+                // 关闭当前的场景
+                self.close_project_dialog();
+            }
         } 
     }
 
@@ -109,6 +143,24 @@ impl ProjectButton {
         self.base_mut().add_child(&dialog_node);
         // 4. 弹出
         dialog.bind_mut().open_dialog();
+    }
+
+    #[func]
+    fn close_project_dialog(&mut self){
+        // 关闭当前的场景
+        let mut tree = self.base().get_tree().unwrap();
+        // 找到组内所有成员并销毁
+        tree.call_group("node_dialog", "queue_free", &[]);
+    }
+
+    // 发送信息给 富文本显示内容
+    #[func]
+    pub fn send_message_to_rich(&mut self, message: String){
+        self.base().get_tree().unwrap().call_group(
+                        "log_receivers", 
+                        "on_add_log", 
+                        &[message.to_variant()]
+                    );
     }
 }
 

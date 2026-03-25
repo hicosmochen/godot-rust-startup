@@ -53,7 +53,8 @@ offset_right = 230.0
 offset_bottom = 270.0
 text = "取消"
 
-[node name="Button_confirm" type="Button" parent="ColorRect/Panel" unique_id=60291420]
+[node name="Button_confirm" type="ProjectButton" parent="ColorRect/Panel" unique_id=67915732]
+kind = 6
 layout_mode = 0
 offset_left = 250.0
 offset_top = 220.0
