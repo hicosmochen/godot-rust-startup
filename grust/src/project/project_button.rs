@@ -21,7 +21,9 @@ pub enum ButtonKind {
     NeedCreateDemo,
     StartCreatProject,
     Cancel,
-    Confirm,
+    ConfirmPathRust,
+    ConfirmNameGdext,
+    ConfirmCreatDemo,
 }
 
 
@@ -81,14 +83,25 @@ impl ProjectButton {
                     root.add_child(&my_node);
                 }
             },
-            ButtonKind::GdextFileName => godot_print!("按钮被点击了...GdextFileName"),
+            ButtonKind::GdextFileName => {
+                let scene_path = "res://scene/dialog_name_gdext.tscn";
+                let scene = load::<PackedScene>(scene_path);
+                // 1. 实例化为 Node
+                let my_node = scene.instantiate_as::<Node>();
+
+                // 2. 获取场景树根节点 (Main Loop 的根 Window)
+                if let Some(mut root) = self.base().get_tree().and_then(|t| t.get_root()) {
+                    // 3. 将 Node 挂载到根部
+                    root.add_child(&my_node);
+                }
+            },
             ButtonKind::NeedCreateDemo => godot_print!("按钮被点击了...NeedCreateDemo"),
             ButtonKind::StartCreatProject => godot_print!("按钮被点击了...StartCreatProject"),
             ButtonKind::Cancel => {
                 // 关闭当前的场景
                 self.close_project_dialog();
             },
-            ButtonKind::Confirm => {
+            ButtonKind::ConfirmPathRust => {
                 godot_print!("按钮被点击了...确认按钮");
                 // 1. 获取父节点
                 if let Some(parent) = self.base().get_parent() {
@@ -97,27 +110,71 @@ impl ProjectButton {
                     if let Some(line_edit) = parent.try_get_node_as::<LineEdit>("LineEdit") {
                         // 3. 访问信息
                         let text = line_edit.get_text();
-                        //------------------------------------------------------------
-                        // 构建配置对象
-                        let mut config = ConfigFile::new_gd();
-                        // 尝试加载旧配置（忽略“文件不存在”的错误，因为第一次运行肯定没有）
-                        let _ = config.load("res://config.cfg"); 
-                        config.set_value("Editor", "rust_name", &text.to_variant());
-                        // 保存并检查结果
-                        let result = config.save("res://config.cfg");
-                        if result == Error::OK {
-                            godot_print!("路径已成功保存: {}", text);
-                            self.send_message_to_rich(format!("RUST根目录名称: {text}"));
+                        // 判断内容如果为空的情况下, 给出提示信息
+                        if text.is_empty() {
+                            self.send_message_to_rich(format!("RUST的根目录不正确, 内容不能为空"));
                         } else {
-                            self.send_message_to_rich(format!("存储失败"));
+                            //------------------------------------------------------------
+                            // 构建配置对象
+                            let mut config = ConfigFile::new_gd();
+                            // 尝试加载旧配置（忽略“文件不存在”的错误，因为第一次运行肯定没有）
+                            let _ = config.load("res://config.cfg"); 
+                            config.set_value("Editor", "rust_root", &text.to_variant());
+                            // 保存并检查结果
+                            let result = config.save("res://config.cfg");
+                            if result == Error::OK {
+                                godot_print!("路径已成功保存: {}", text);
+                                self.send_message_to_rich(format!("RUST根目录名称: {text}"));
+                            } else {
+                                self.send_message_to_rich(format!("存储失败"));
+                            }
+                            //------------------------------------------------------------
                         }
-                        //------------------------------------------------------------
                     }else {
                         godot_warn!("找不到名为 LineEdit 的同级节点");
                     };   
                 }
                 // 关闭当前的场景
                 self.close_project_dialog();
+            }
+            ButtonKind::ConfirmNameGdext => {
+                godot_print!("按钮被点击了...确认按钮");
+                // 1. 获取父节点
+                if let Some(parent) = self.base().get_parent() {
+                    // 2. 尝试获取同级的 LineEdit
+                    // 注意："LineEdit" 必须与场景面板中的名称一致
+                    if let Some(line_edit) = parent.try_get_node_as::<LineEdit>("LineEdit") {
+                        // 3. 访问信息
+                        let text = line_edit.get_text();
+                        // 判断内容如果为空的情况下, 给出提示信息
+                        if text.is_empty() {
+                            self.send_message_to_rich(format!("GDEXT的名称不正确, 内容不能为空"));
+                        } else {
+                            //------------------------------------------------------------
+                            // 构建配置对象
+                            let mut config = ConfigFile::new_gd();
+                            // 尝试加载旧配置（忽略“文件不存在”的错误，因为第一次运行肯定没有）
+                            let _ = config.load("res://config.cfg"); 
+                            config.set_value("Editor", "gdext_name", &text.to_variant());
+                            // 保存并检查结果
+                            let result = config.save("res://config.cfg");
+                            if result == Error::OK {
+                                godot_print!("路径已成功保存: {}", text);
+                                self.send_message_to_rich(format!("GDEXT的名称: {text}"));
+                            } else {
+                                self.send_message_to_rich(format!("存储失败"));
+                            }
+                            //------------------------------------------------------------
+                        }
+                    }else {
+                        godot_warn!("找不到名为 LineEdit 的同级节点");
+                    };   
+                }
+                // 关闭当前的场景
+                self.close_project_dialog();
+            }
+            ButtonKind::ConfirmCreatDemo => {
+                godot_print!("按钮被点击了...确认创建案例");
             }
         } 
     }
