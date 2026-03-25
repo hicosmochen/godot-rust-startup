@@ -32,7 +32,7 @@ impl IFileDialog for MyFileDialog{
 impl MyFileDialog {
     // 文件的选择
     #[func]
-    fn on_file_selected(&self, path: String){
+    fn on_file_selected(&mut self, path: String){
         match self.kind.as_str() {
              "path_godot" => {
                 SecureStorage::save("path_godot", &path);
@@ -49,7 +49,7 @@ impl MyFileDialog {
 
     // 文件夹的选择
     #[func]
-    fn on_dir_selected(&self, path: String){
+    fn on_dir_selected(&mut self, path: String){
         match self.kind.as_str() {
             "path_rust" => {
                 SecureStorage::save("path_rust", &path);
@@ -67,6 +67,7 @@ impl MyFileDialog {
                 let result = config.save("res://config.cfg");
                 if result == Error::OK {
                     godot_print!("路径已成功保存: {}", path);
+                    self.send_message_to_rich(format!("工作路径: {path}"));
                 } else {
                     godot_print!("存储失败: {:?}", result);
                 }
@@ -76,6 +77,17 @@ impl MyFileDialog {
                  godot_print!("用户选择其他文件夹");
             },
         };
+    }
+
+
+    // 发送信息给 富文本显示内容
+    #[func]
+    pub fn send_message_to_rich(&mut self, message: String){
+        self.base().get_tree().unwrap().call_group(
+                        "log_receivers", 
+                        "on_add_log", 
+                        &[message.to_variant()]
+                    );
     }
 
     

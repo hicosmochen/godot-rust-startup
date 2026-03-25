@@ -1,8 +1,9 @@
 use godot::prelude::*;
 use godot::classes::{Button, IButton, Theme}; // 导入需要的 UI 类
+use godot::classes::os::SystemDir;
 // 记得导入你的自定义类
 use crate::menu::my_file_dialog::MyFileDialog;
-use godot::classes::os::SystemDir;
+use crate::project::project_richtext::ProjectRichTextLabel;
 
 // 定义 Button 的枚举类型, 让godot可以进行外部赋值（赋值的内容是指定的数据值）
 #[derive(GodotConvert, Var, Export, Default, Copy, Clone, Debug)]
@@ -25,6 +26,10 @@ pub struct ProjectButton {
 
     #[export]
     pub kind: ButtonKind,
+
+    // 外部加入显示区域的 富文本信息
+    #[export]
+    pub label_rich: Option<Gd<ProjectRichTextLabel>>,
 }
 
 
@@ -35,6 +40,7 @@ impl IButton for ProjectButton {
         Self {
             base,
             kind: ButtonKind::SelectWorkSpace,   // 默认初始化
+            label_rich: None, // 初始化必须为 None，等待 Godot 注入,
         }
     }
 
@@ -48,6 +54,7 @@ impl IButton for ProjectButton {
 // #[func] 必须放在单独的 impl 块中
 #[godot_api]
 impl ProjectButton {
+
     #[func]
     fn on_button_pressed(&mut self){
          // 根据 kind 执行逻辑
