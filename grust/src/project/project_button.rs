@@ -70,7 +70,7 @@ impl ProjectButton {
             ButtonKind::SelectWorkSpace => {
                 // 这里需要打开文件目录选择弹窗
                 // 启动文件类型的对话框
-                self.open_dir_dialog(r"选择工作空间".to_string())
+                self.open_dir_dialog(r"选择工作空间".to_string());
             },
             ButtonKind::RustRootPath => {
                 let scene_path = String::from("res://scene/dialog_name_rust.tscn");
@@ -84,7 +84,7 @@ impl ProjectButton {
                 let scene_path = String::from("res://scene/dialog_create_demo.tscn");
                 self.create_dialog_by_scene(scene_path);
             },
-            ButtonKind::StartCreatProject => godot_print!("按钮被点击了...StartCreatProject"),
+            ButtonKind::StartCreatProject => self.start_create_project(),
             ButtonKind::Cancel => {
                 // 关闭当前的场景
                 self.close_project_dialog();
@@ -195,7 +195,7 @@ impl ProjectButton {
                 // 关闭当前的场景
                 self.close_project_dialog();
             }
-        } 
+        }
     }
 
     // 打开文件夹的对话框
@@ -253,6 +253,13 @@ impl ProjectButton {
             root.add_child(&my_node);
         }
     }
+
+    // 开始创建项目
+    #[func]
+    pub fn start_create_project(&mut self){
+        godot_print!("按钮被点击了..start_create_project.StartCreatProject")
+    }
+
 }
 
 
