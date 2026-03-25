@@ -1,5 +1,5 @@
 use godot::prelude::*;
-use godot::classes::{ProgressBar, IProgressBar, Theme}; // 导入需要的 UI 类
+use godot::classes::{ProgressBar, IProgressBar}; // 导入需要的 UI 类
 
 #[derive(GodotClass)]
 #[class(base=ProgressBar)] 

@@ -1,5 +1,5 @@
 use godot::prelude::*;
-use godot::classes::{Button, IButton, Theme}; // 导入需要的 UI 类
+use godot::classes::{Button, IButton, PackedScene}; // 导入需要的 UI 类
 use godot::classes::os::SystemDir;
 // 记得导入你的自定义类
 use crate::menu::my_file_dialog::MyFileDialog;
@@ -16,6 +16,7 @@ pub enum ButtonKind {
     GdextFileName,
     NeedCreateDemo,
     StartCreatProject,
+    Cancel,
 }
 
 
@@ -36,7 +37,6 @@ pub struct ProjectButton {
 #[godot_api]
 impl IButton for ProjectButton {
     fn init(base: Base<Button>) -> Self {
-        godot_print!("按钮"); 
         Self {
             base,
             kind: ButtonKind::SelectWorkSpace,   // 默认初始化
@@ -60,15 +60,31 @@ impl ProjectButton {
          // 根据 kind 执行逻辑
         match self.kind {
             ButtonKind::SelectWorkSpace => {
-                godot_print!("按钮被点击了...SelectWorkSpace");
                 // 这里需要打开文件目录选择弹窗
                 // 启动文件类型的对话框
                 self.open_dir_dialog(r"选择工作空间".to_string())
             },
-            ButtonKind::RustRootPath => godot_print!("按钮被点击了...RustRootPath"),
+            ButtonKind::RustRootPath => {
+                let scene_path = "res://scene/dialog_name_rust.tscn";
+                let scene = load::<PackedScene>(scene_path);
+                // 1. 实例化为 Node
+                let my_node = scene.instantiate_as::<Node>();
+
+                // 2. 获取场景树根节点 (Main Loop 的根 Window)
+                if let Some(mut root) = self.base().get_tree().and_then(|t| t.get_root()) {
+                    // 3. 将 Node 挂载到根部
+                    root.add_child(&my_node);
+                }
+            },
             ButtonKind::GdextFileName => godot_print!("按钮被点击了...GdextFileName"),
             ButtonKind::NeedCreateDemo => godot_print!("按钮被点击了...NeedCreateDemo"),
             ButtonKind::StartCreatProject => godot_print!("按钮被点击了...StartCreatProject"),
+            ButtonKind::Cancel => {
+                // 关闭当前的场景
+                let mut tree = self.base().get_tree().unwrap();
+                // 找到组内所有成员并销毁
+                tree.call_group("node_dialog", "queue_free", &[]);
+            },
         } 
     }
 

@@ -1,0 +1,62 @@
+[gd_scene format=3 uid="uid://6jtw4u07thiy"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fdx61"]
+bg_color = Color(0, 0.59770703, 0.6184361, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[node name="DialogNameRust" type="ProjectDialog" unique_id=1388377297]
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1692341023]
+offset_right = 1280.0
+offset_bottom = 800.0
+color = Color(0.3044623, 0.30446222, 0.30446216, 0.6862745)
+metadata/_edit_lock_ = true
+
+[node name="Panel" type="Panel" parent="ColorRect" unique_id=31676797]
+layout_mode = 0
+offset_left = 400.0
+offset_top = 240.0
+offset_right = 880.0
+offset_bottom = 560.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_fdx61")
+
+[node name="Label" type="Label" parent="ColorRect/Panel" unique_id=1236569304]
+layout_mode = 0
+offset_top = 30.0
+offset_right = 480.0
+offset_bottom = 80.0
+theme_override_font_sizes/font_size = 36
+text = "RUST的根目录名称"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LineEdit" type="LineEdit" parent="ColorRect/Panel" unique_id=371245536]
+layout_mode = 0
+offset_left = 50.0
+offset_top = 100.0
+offset_right = 430.0
+offset_bottom = 160.0
+theme_override_font_sizes/font_size = 24
+placeholder_text = "rust根目录名称"
+backspace_deletes_composite_character_enabled = true
+clear_button_enabled = true
+
+[node name="Button_cancel" type="ProjectButton" parent="ColorRect/Panel" unique_id=782469976]
+kind = 5
+layout_mode = 0
+offset_left = 50.0
+offset_top = 220.0
+offset_right = 230.0
+offset_bottom = 270.0
+text = "取消"
+
+[node name="Button_confirm" type="Button" parent="ColorRect/Panel" unique_id=60291420]
+layout_mode = 0
+offset_left = 250.0
+offset_top = 220.0
+offset_right = 430.0
+offset_bottom = 270.0
+text = "确认"

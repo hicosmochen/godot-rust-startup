@@ -1,5 +1,5 @@
 use godot::prelude::*;
-use godot::classes::{RichTextLabel, IRichTextLabel, Theme}; // 导入需要的 UI 类
+use godot::classes::{RichTextLabel, IRichTextLabel}; // 导入需要的 UI 类
 
 #[derive(GodotClass)]
 #[class(base=RichTextLabel)] 
