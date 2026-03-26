@@ -82,10 +82,11 @@ impl IButton for ProjectButton {
                 self.send_message_to_rich(format!("Cargo 创建完毕了"));
                 self.cargo_add_godot();
             }else if msg.to_string() == "ADD_GODOT_SUCCESS" {
-                 godot_print!("add godot 创建完毕了xxx");
+                godot_print!("add godot 创建完毕了xxx");
                 self.send_message_to_rich(format!("add godot 创建完毕了"));
+                self.modify_cargo_toml();
             }else if msg.to_string() == "CARGO_ERROR" {
-                 godot_print!("add godot 创建失败了xxx");
+                godot_print!("add godot 创建失败了xxx");
                 self.send_message_to_rich(format!("add godot 创建完毕了"));
             }
         }
@@ -372,7 +373,6 @@ impl ProjectButton {
         self.send_message_to_rich(format!("cargo: {cargo_path}"));
 
         // 克隆变量以进入线程闭包
-        let rust_root_clone = rust_root.clone();
         let work_space_clone = work_space.clone();
 
         let (tx, rx) = mpsc::channel();
@@ -386,7 +386,7 @@ impl ProjectButton {
             // 2. 执行耗时操作
             let mut binding = std::process::Command::new(cargo_path);
             let cmd = binding.arg("new")
-                .arg(rust_root_clone)
+                .arg(rust_root)
                 .arg("--lib")
                 .current_dir(work_space_clone);
             // 仅在 Windows 下配置隐藏窗口
@@ -429,7 +429,6 @@ impl ProjectButton {
 
         // 需要执行下面的命令
         // 克隆变量以进入线程闭包
-        let rust_root_clone = rust_root.clone();
         let work_space_clone = work_space  + "/"+ &rust_root;
 
         let (tx, rx) = mpsc::channel();
@@ -471,6 +470,55 @@ impl ProjectButton {
                 }
             }
         });
+    }
+
+    #[func]
+    fn modify_cargo_toml(&mut self) {
+        let mut config = ConfigFile::new_gd();
+        let _ = config.load("res://config.cfg");
+
+        // 错误 1 修复：.default() 需要传入引用 &Variant，所以加上 &
+        let work_space = config
+            .get_value_ex("Editor", "work_space")
+            .default(&"".to_variant()) 
+            .done()
+            .to::<String>();
+
+        let rust_root = config
+            .get_value_ex("Editor", "rust_root")
+            .default(&"".to_variant()) 
+            .done()
+            .to::<String>();
+
+        let cargo_toml_path = format!("{}/{}/Cargo.toml", work_space, rust_root);
+
+        // 封装逻辑以使用 ? 语法
+        let execute_modify = || -> Result<(), Box<dyn std::error::Error>> {
+            let content = std::fs::read_to_string(&cargo_toml_path)?;
+            let mut doc = content.parse::<toml_edit::DocumentMut>()?;
+
+            // 错误 2 修复：toml_edit 的 value() 不支持直接从 Vec<&str> 转换
+            // 需要显式转换为 Value::from_iter
+            let mut lib_table = toml_edit::Table::new();
+            let crate_types: toml_edit::Array = vec!["cdylib"].into_iter().collect();
+            lib_table["crate-type"] = toml_edit::value(crate_types);
+            
+            doc.insert("lib", toml_edit::Item::Table(lib_table));
+
+            std::fs::write(&cargo_toml_path, doc.to_string())?;
+            Ok(())
+        };
+
+        match execute_modify() {
+            Ok(_) => {
+                godot_print!("结果成功");
+                self.send_message_to_rich(format!("modify cargo toml 创建完毕了"));
+            }
+            Err(_e) => {
+                godot_print!("结果失败");
+                self.send_message_to_rich(format!("modify cargo toml 创建失败了"));
+            }
+        }
     }
 }
 
