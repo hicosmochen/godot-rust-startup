@@ -5,6 +5,7 @@ use godot::classes::ConfigFile;  // 正确导入 配置文件信息
 use godot::global::Error;        // 正确导入 Godot 的全局错误枚举
 
 use std::sync::mpsc;
+use std::os::windows::process::CommandExt; // 必须导入
 
 // 记得导入你的自定义类
 use crate::menu::my_file_dialog::MyFileDialog;
@@ -74,11 +75,18 @@ impl IButton for ProjectButton {
                 messages.push(msg);
             }
         }
-        // 2. 此时不可变借用已结束，可以安全地进行可变借用
+        // 2. 此时不可变借用已结束，可以安全地进行可变借用  CARGO_ERROR
         for msg in messages {
             if msg.to_string() == "CARGO_SUCCESS"{
                 godot_print!("Cargo 创建完毕了xxx");
                 self.send_message_to_rich(format!("Cargo 创建完毕了"));
+                self.cargo_add_godot();
+            }else if msg.to_string() == "ADD_GODOT_SUCCESS" {
+                 godot_print!("add godot 创建完毕了xxx");
+                self.send_message_to_rich(format!("add godot 创建完毕了"));
+            }else if msg.to_string() == "CARGO_ERROR" {
+                 godot_print!("add godot 创建失败了xxx");
+                self.send_message_to_rich(format!("add godot 创建完毕了"));
             }
         }
     }
@@ -366,23 +374,101 @@ impl ProjectButton {
         // 克隆变量以进入线程闭包
         let rust_root_clone = rust_root.clone();
         let work_space_clone = work_space.clone();
-        
+
         let (tx, rx) = mpsc::channel();
         self.receiver = Some(rx); // 将接收端交给主线程轮询
         std::thread::spawn(move || {
             // 1. 发送开始信号
             let _ = tx.send("任务开始...".to_string());
+            // Windows 隐藏窗口标志位
+            const CREATE_NO_WINDOW: u32 = 0x08000000;
+
             // 2. 执行耗时操作
-            let output = std::process::Command::new(cargo_path)
-                .arg("new")
+            let mut binding = std::process::Command::new(cargo_path);
+            let cmd = binding.arg("new")
                 .arg(rust_root_clone)
                 .arg("--lib")
-                .current_dir(work_space_clone)
-                .output();
+                .current_dir(work_space_clone);
+            // 仅在 Windows 下配置隐藏窗口
+            #[cfg(windows)]
+            {
+                cmd.creation_flags(CREATE_NO_WINDOW);
+            }
+            let output = cmd.output();
+
             // 3. 发送结果
             match output {
                 Ok(_) => { let _ = tx.send("CARGO_SUCCESS".to_string()); }
                 Err(e) => { let _ = tx.send(format!("CARGO_FAIL: {}", e)); }
+            }
+        });
+    }
+
+
+    // 自动化实现 （执行命令） cargo  add  godot
+    #[func]
+    fn cargo_add_godot(&mut self){
+        let path_rust = SecureStorage::get("path_rust");
+        let cargo_path =  path_rust + "/bin/cargo.exe";
+        // 构建配置对象
+        let mut config = ConfigFile::new_gd();
+        // 尝试加载旧配置（忽略“文件不存在”的错误，因为第一次运行肯定没有）
+        let _ = config.load("res://config.cfg"); 
+        // 带默认值的安全获取（推荐方式）
+        let work_space = config
+            .get_value_ex("Editor", "work_space")
+            .default(&"".to_variant())  
+            .done()
+            .to::<String>();
+
+        let rust_root = config
+            .get_value_ex("Editor", "rust_root")
+            .default(&"".to_variant())  
+            .done()
+            .to::<String>();
+
+        // 需要执行下面的命令
+        // 克隆变量以进入线程闭包
+        let rust_root_clone = rust_root.clone();
+        let work_space_clone = work_space  + "/"+ &rust_root;
+
+        let (tx, rx) = mpsc::channel();
+        self.receiver = Some(rx); // 将接收端交给主线程轮询
+        std::thread::spawn(move || {
+            // 1. 发送开始信号
+            let _ = tx.send("任务开始...".to_string());
+
+            // Windows 隐藏窗口标志位
+            const CREATE_NO_WINDOW: u32 = 0x08000000;
+
+            // 2. 执行耗时操作
+            let mut binding = std::process::Command::new(cargo_path);
+            let cmd = binding.arg("add") 
+                .arg("godot")
+                .current_dir(work_space_clone);
+
+            // 仅在 Windows 下配置隐藏窗口
+            #[cfg(windows)]
+            {
+                cmd.creation_flags(CREATE_NO_WINDOW);
+            }
+
+            let output = cmd.output();
+
+            // 3. 发送结果
+            match output {
+               Ok(out) => {
+                    if out.status.success() {
+                        let _ = tx.send("ADD_GODOT_SUCCESS".to_string());
+                    } else {
+                        // 关键修正 2: 捕获并发送真正的错误信息
+                        let error_msg = String::from_utf8_lossy(&out.stderr);
+                        let _ = tx.send(format!("CARGO_ERROR: {}", error_msg));
+                    }
+                }
+                Err(e) => {
+                    let _ = tx.send(format!("PROCESS_FAIL: {}", e));
+                }
             }
         });
     }
