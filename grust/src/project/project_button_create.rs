@@ -20,6 +20,13 @@ pub struct ProjectButtonCreate {
 
     // 使用 Option 包装，因为在 init 时还没有通道
     receiver: Option<mpsc::Receiver<String>>,
+
+    path_rust  : String,
+    path_godot : String,
+    work_space : String,
+    rust_root  : String,
+    gdext_name : String,
+    create_demo : bool,
 }
 
 
@@ -31,6 +38,12 @@ impl IButton for ProjectButtonCreate {
             base,
             label_rich: None, // 初始化必须为 None，等待 Godot 注入,
             receiver : None,
+            path_rust : "".to_string(),
+            path_godot : "".to_string(),
+            work_space : "".to_string(),
+            rust_root : "".to_string(),
+            gdext_name : "".to_string(),
+            create_demo : false,
         }
     }
 
@@ -84,12 +97,16 @@ impl ProjectButtonCreate {
 
     #[func]
     fn on_button_pressed(&mut self){
-        self.start_create_project();
+        if self.start_create_project(){
+            godot_print!("开始创建项目");
+            self.creat_rust_project();
+        }else{
+            godot_print!("条件不满足");
+        }
     }
 
 
     
-
     /*
         开始创建项目
             1、 创建 rust 项目
@@ -100,78 +117,76 @@ impl ProjectButtonCreate {
             6、 检测映射文件 extension_list.cfg  ----------- 自动化实现
     */
     #[func]
-    pub fn start_create_project(&mut self){
+    pub fn start_create_project(&mut self) -> bool{
         godot_print!("按钮被点击了..start_create_project.StartCreatProject");
         // 获取到前面存储的所有数据
         // 1、Godot 启动文件
-        let path_godot = SecureStorage::get("path_godot");
-        let path_rust = SecureStorage::get("path_rust");
+        self.path_godot = SecureStorage::get("path_godot");
+        self.path_rust = SecureStorage::get("path_rust");
         // 构建配置对象
         let mut config = ConfigFile::new_gd();
         // 尝试加载旧配置（忽略“文件不存在”的错误，因为第一次运行肯定没有）
         let _ = config.load("res://config.cfg"); 
         // 带默认值的安全获取（推荐方式）
-        let work_space = config
+        self.work_space = config
             .get_value_ex("Editor", "work_space")
             .default(&"".to_variant())  
             .done()
-            .to::<String>();
+            .try_to::<String>()
+            .unwrap_or_default(); // 如果失败或不存在，返回空字符串 ""
 
-        let rust_root = config
+        self.rust_root = config
             .get_value_ex("Editor", "rust_root")
             .default(&"".to_variant())  
             .done()
-            .to::<String>();
+            .try_to::<String>()
+            .unwrap_or_default(); // 如果失败或不存在，返回空字符串 ""
 
-        let gdext_name = config
+        self.gdext_name = config
             .get_value_ex("Editor", "gdext_name")
             .default(&"".to_variant())  
             .done()
-            .to::<String>();
+            .try_to::<String>()
+            .unwrap_or_default(); // 如果失败或不存在，返回空字符串 ""
 
-        let _create_demo = config
+        self.create_demo = config
             .get_value_ex("Editor", "create_demo")
             .default(&false.to_variant())  
             .done()
             .to::<bool>();
 
-        if path_godot.is_empty(){
+        if self.path_godot.is_empty(){
             self.send_message_to_rich(format!("Godot 的路径不能为空"));
-            return
+            return false;
         }
         
-        if path_rust.is_empty(){
+        if self.path_rust.is_empty(){
             self.send_message_to_rich(format!("Rust 的路径不能为空"));
-            return
+            return false;
         }
         
-        if work_space.is_empty(){
+        if self.work_space.is_empty(){
             self.send_message_to_rich(format!("工作空间 的路径不能为空"));
-            return
+             return false;
         }
         
-        if gdext_name.is_empty(){
+        if self.gdext_name.is_empty(){
             self.send_message_to_rich(format!("gdext的名称不能为空"));
-            return
+             return false;
         }
-
-        // ------------------------------------------------------------
-         godot_print!("开始创建项目");
-        // 创建项目
-        self.creat_rust_project(path_rust, work_space, rust_root);
+         return true;
     }
 
 
     // 创建 rust 项目
     #[func]
-    fn creat_rust_project(&mut self, path_rust : String, work_space: String,  rust_root : String) {
-        // cargo new  myrust   --lib
-        // 需要执行上面的命令  C:/Users/Administrator/.cargo/bin/cargo.exe
-        let cargo_path =  path_rust + "/bin/cargo.exe";
+    fn creat_rust_project(&mut self) {
+        let cargo_path =  format!("{}/bin/cargo.exe", self.path_rust);
         self.send_message_to_rich(format!("cargo: {cargo_path}"));
 
         // 克隆变量以进入线程闭包
-        let work_space_clone = work_space.clone();
+        let rust_root = self.rust_root.clone();
+        let work_space_clone = self.work_space.clone();
 
         let (tx, rx) = mpsc::channel();
         self.receiver = Some(rx); // 将接收端交给主线程轮询
@@ -206,28 +221,9 @@ impl ProjectButtonCreate {
     // 自动化实现 （执行命令） cargo  add  godot
     #[func]
     fn cargo_add_godot(&mut self){
-        let path_rust = SecureStorage::get("path_rust");
-        let cargo_path =  path_rust + "/bin/cargo.exe";
-        // 构建配置对象
-        let mut config = ConfigFile::new_gd();
-        // 尝试加载旧配置（忽略“文件不存在”的错误，因为第一次运行肯定没有）
-        let _ = config.load("res://config.cfg"); 
-        // 带默认值的安全获取（推荐方式）
-        let work_space = config
-            .get_value_ex("Editor", "work_space")
-            .default(&"".to_variant())  
-            .done()
-            .to::<String>();
-
-        let rust_root = config
-            .get_value_ex("Editor", "rust_root")
-            .default(&"".to_variant())  
-            .done()
-            .to::<String>();
-
+        let cargo_path =  format!("{}/bin/cargo.exe", self.path_rust);
         // 需要执行下面的命令
-        // 克隆变量以进入线程闭包
-        let work_space_clone = work_space  + "/"+ &rust_root;
+        let work_space_clone =  format!("{}/{}", self.work_space, self.rust_root);
 
         let (tx, rx) = mpsc::channel();
         self.receiver = Some(rx); // 将接收端交给主线程轮询
@@ -270,25 +266,11 @@ impl ProjectButtonCreate {
         });
     }
 
+
+    // 修改 cargo toml 的名称
     #[func]
     fn modify_cargo_toml(&mut self) {
-        let mut config = ConfigFile::new_gd();
-        let _ = config.load("res://config.cfg");
-
-        // 错误 1 修复：.default() 需要传入引用 &Variant，所以加上 &
-        let work_space = config
-            .get_value_ex("Editor", "work_space")
-            .default(&"".to_variant()) 
-            .done()
-            .to::<String>();
-
-        let rust_root = config
-            .get_value_ex("Editor", "rust_root")
-            .default(&"".to_variant()) 
-            .done()
-            .to::<String>();
-
-        let cargo_toml_path = format!("{}/{}/Cargo.toml", work_space, rust_root);
+        let cargo_toml_path = format!("{}/{}/Cargo.toml", self.work_space, self.rust_root);
 
         // 封装逻辑以使用 ? 语法
         let execute_modify = || -> Result<(), Box<dyn std::error::Error>> {
@@ -318,4 +300,15 @@ impl ProjectButtonCreate {
             }
         }
     }
+
+    /*
+        1、 需要创建 lib.rs 文件, 加入必须的数据
+        2、 创建 godot 的文件夹
+        3、 在文件夹当中, 需要创建文件 project.godot
+        4、 需要创建文件 my_game.gdextension 文件中写入数据 
+        5、 往 my_game.gdextension 文件中写入配置数据
+        6、 启动 godot --editor
+        7、 需要修改配置文件的路径信息:  C:\Users\Administrator\AppData\Roaming\Godot\projects.cfg
+    */
+
 }
