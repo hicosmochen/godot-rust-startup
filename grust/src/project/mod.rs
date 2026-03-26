@@ -3,3 +3,4 @@ pub mod project_button;
 pub mod project_progress;
 pub mod project_richtext;
 pub mod project_dialog;
+pub mod project_button_create;

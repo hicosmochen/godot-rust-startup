@@ -78,8 +78,7 @@ offset_bottom = 547.0
 theme_override_font_sizes/font_size = 40
 text = "需要创建案例"
 
-[node name="ProjectButton_05" type="ProjectButton" parent="ColorRect" unique_id=1476287607 node_paths=PackedStringArray("label_rich")]
-kind = 4
+[node name="ProjectButton_05" type="ProjectButtonCreate" parent="ColorRect" unique_id=245370042 node_paths=PackedStringArray("label_rich")]
 label_rich = NodePath("../ProjectRichTextLabel")
 layout_mode = 0
 offset_left = 26.0

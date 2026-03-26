@@ -45,7 +45,7 @@ backspace_deletes_composite_character_enabled = true
 clear_button_enabled = true
 
 [node name="Button_cancel" type="ProjectButton" parent="ColorRect/Panel" unique_id=782469976]
-kind = 5
+kind = 4
 layout_mode = 0
 offset_left = 50.0
 offset_top = 220.0
@@ -54,7 +54,7 @@ offset_bottom = 270.0
 text = "取消"
 
 [node name="Button_confirm" type="ProjectButton" parent="ColorRect/Panel" unique_id=67915732]
-kind = 7
+kind = 6
 layout_mode = 0
 offset_left = 250.0
 offset_top = 220.0
