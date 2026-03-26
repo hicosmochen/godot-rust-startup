@@ -377,15 +377,56 @@ unsafe impl ExtensionLibrary for MyExtension {
     }
 
 
+    #[func]
+    fn create_file_gdextension(&mut self) {
+        godot_print!("需要创建文件 create file gdextension 文件中写入数据 ");
+        // 定义需要操作的路径
+        let file_gdextension_path = format!("{}/godot/{}.gdextension", self.work_space, self.gdext_name);
+        // 定义需要操作的文本内容
+        // 1. 定义你的变量
+        let project_name = self.rust_root.clone(); 
+
+        // 2. 使用 format! 宏进行拼接
+        // 注意：如果字符串内部包含 { }（如 Godot 的 dict），需要用双大括号 {{ }} 转义，
+        // 但在此配置文件格式中，直接使用 {} 即可。
+        let content = format!(
+    r#"[configuration]
+entry_symbol = "gdext_rust_init"
+compatibility_minimum = 4.1
+reloadable = true
+
+[libraries]
+windows.debug.x86_64 = "res://../{}/target/debug/{}.dll""#, 
+            project_name, project_name
+        );
+
+        // 封装逻辑以使用 ? 语法
+        let execute_modify = || -> Result<(), Box<dyn std::error::Error>> {
+            fs::File::create(&file_gdextension_path)?; // 注意加了 &
+            std::fs::write(&file_gdextension_path, content)?; // 现在可以正常使用了
+            Ok(())
+        };
+
+        match execute_modify() {
+            Ok(_) => {
+                godot_print!("create file gdextension 创建完毕了");
+                self.send_message_to_rich(format!("create file gdextension 创建完毕了"));
+                self.start_up_godot();
+            }
+            Err(_e) => {
+                godot_print!("create file gdextension  创建失败了");
+                self.send_message_to_rich(format!("create file gdextension  创建失败了"));
+            }
+        }
+    }
+
+    
     /*
-        1、 需要创建文件 my_game.gdextension 文件中写入数据 
-        2、 往 my_game.gdextension 文件中写入配置数据
         3、 启动 godot --editor
         4、 需要修改配置文件的路径信息:  C:\Users\Administrator\AppData\Roaming\Godot\projects.cfg
     */
     #[func]
-    fn create_file_gdextension(&mut self) {
-        godot_print!("需要创建文件 my_game.gdextension 文件中写入数据 ");
+    fn start_up_godot(&mut self) {
+        godot_print!("start up godot 创建完毕了");
     }
-
 }
