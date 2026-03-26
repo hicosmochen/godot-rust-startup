@@ -4,9 +4,12 @@ use godot::classes::os::SystemDir;
 use godot::classes::ConfigFile;  // 正确导入 配置文件信息
 use godot::global::Error;        // 正确导入 Godot 的全局错误枚举
 
+use std::sync::mpsc;
+
 // 记得导入你的自定义类
 use crate::menu::my_file_dialog::MyFileDialog;
 use crate::project::project_richtext::ProjectRichTextLabel;
+use crate::secure::secure_storage::SecureStorage;
 
 
 // 定义 Button 的枚举类型, 让godot可以进行外部赋值（赋值的内容是指定的数据值）
@@ -31,6 +34,7 @@ pub enum ButtonKind {
 #[derive(GodotClass)]
 #[class(base=Button)] 
 pub struct ProjectButton {
+
     pub base: Base<Button>,
 
     #[export]
@@ -39,6 +43,9 @@ pub struct ProjectButton {
     // 外部加入显示区域的 富文本信息
     #[export]
     pub label_rich: Option<Gd<ProjectRichTextLabel>>,
+
+    // 使用 Option 包装，因为在 init 时还没有通道
+    receiver: Option<mpsc::Receiver<String>>,
 }
 
 
@@ -49,6 +56,7 @@ impl IButton for ProjectButton {
             base,
             kind: ButtonKind::SelectWorkSpace,   // 默认初始化
             label_rich: None, // 初始化必须为 None，等待 Godot 注入,
+            receiver : None,
         }
     }
 
@@ -57,11 +65,29 @@ impl IButton for ProjectButton {
         let button_pressed =  self.base().callable("on_button_pressed");
         self.base_mut().connect("pressed", &button_pressed);
     }
+
+    fn process(&mut self, _delta: f64) {
+        let mut messages = Vec::new();
+        // 1. 快速检查通道，仅不可变借用 self.receiver
+        if let Some(ref rx) = self.receiver {
+            while let Ok(msg) = rx.try_recv() {
+                messages.push(msg);
+            }
+        }
+        // 2. 此时不可变借用已结束，可以安全地进行可变借用
+        for msg in messages {
+            if msg.to_string() == "CARGO_SUCCESS"{
+                godot_print!("Cargo 创建完毕了xxx");
+                self.send_message_to_rich(format!("Cargo 创建完毕了"));
+            }
+        }
+    }
 }
 
 // #[func] 必须放在单独的 impl 块中
 #[godot_api]
 impl ProjectButton {
+
 
     #[func]
     fn on_button_pressed(&mut self){
@@ -254,12 +280,112 @@ impl ProjectButton {
         }
     }
 
-    // 开始创建项目
+
+
+
+    /*
+        开始创建项目
+            1、 创建 rust 项目
+            2、 修改 cargo 文件 ---------------------------- 自动化实现 （配置文件的修改） name = "myrust" # rust 所在的文件夹名称
+            3、 添加 godot 关联 rust ----------------------- 自动化实现 （执行命令） cargo  add  godot
+            4、 创建 godot 项目 ---------------------------- 自动化实现
+            5、 创建 gdextension 文件路径 和 文件名称 -------- 用户选择
+            6、 检测映射文件 extension_list.cfg  ----------- 自动化实现
+    */
     #[func]
     pub fn start_create_project(&mut self){
-        godot_print!("按钮被点击了..start_create_project.StartCreatProject")
+        godot_print!("按钮被点击了..start_create_project.StartCreatProject");
+        // 获取到前面存储的所有数据
+        // 1、Godot 启动文件
+        let path_godot = SecureStorage::get("path_godot");
+        let path_rust = SecureStorage::get("path_rust");
+        // 构建配置对象
+        let mut config = ConfigFile::new_gd();
+        // 尝试加载旧配置（忽略“文件不存在”的错误，因为第一次运行肯定没有）
+        let _ = config.load("res://config.cfg"); 
+        // 带默认值的安全获取（推荐方式）
+        let work_space = config
+            .get_value_ex("Editor", "work_space")
+            .default(&"".to_variant())  
+            .done()
+            .to::<String>();
+
+        let rust_root = config
+            .get_value_ex("Editor", "rust_root")
+            .default(&"".to_variant())  
+            .done()
+            .to::<String>();
+
+        let gdext_name = config
+            .get_value_ex("Editor", "gdext_name")
+            .default(&"".to_variant())  
+            .done()
+            .to::<String>();
+
+        let _create_demo = config
+            .get_value_ex("Editor", "create_demo")
+            .default(&false.to_variant())  
+            .done()
+            .to::<bool>();
+
+        if path_godot.is_empty(){
+            self.send_message_to_rich(format!("Godot 的路径不能为空"));
+            return
+        }
+        
+        if path_rust.is_empty(){
+            self.send_message_to_rich(format!("Rust 的路径不能为空"));
+            return
+        }
+        
+        if work_space.is_empty(){
+            self.send_message_to_rich(format!("工作空间 的路径不能为空"));
+            return
+        }
+        
+        if gdext_name.is_empty(){
+            self.send_message_to_rich(format!("gdext的名称不能为空"));
+            return
+        }
+
+        // ------------------------------------------------------------
+         godot_print!("开始创建项目");
+        // 创建项目
+        self.creat_rust_project(path_rust, work_space, rust_root);
     }
 
+
+    // 创建 rust 项目
+    #[func]
+    fn creat_rust_project(&mut self, path_rust : String, work_space: String,  rust_root : String) {
+        // cargo new  myrust   --lib
+        // 需要执行上面的命令  C:/Users/Administrator/.cargo/bin/cargo.exe
+        let cargo_path =  path_rust + "/bin/cargo.exe";
+        self.send_message_to_rich(format!("cargo: {cargo_path}"));
+
+        // 克隆变量以进入线程闭包
+        let rust_root_clone = rust_root.clone();
+        let work_space_clone = work_space.clone();
+        
+        let (tx, rx) = mpsc::channel();
+        self.receiver = Some(rx); // 将接收端交给主线程轮询
+        std::thread::spawn(move || {
+            // 1. 发送开始信号
+            let _ = tx.send("任务开始...".to_string());
+            // 2. 执行耗时操作
+            let output = std::process::Command::new(cargo_path)
+                .arg("new")
+                .arg(rust_root_clone)
+                .arg("--lib")
+                .current_dir(work_space_clone)
+                .output();
+            // 3. 发送结果
+            match output {
+                Ok(_) => { let _ = tx.send("CARGO_SUCCESS".to_string()); }
+                Err(e) => { let _ = tx.send(format!("CARGO_FAIL: {}", e)); }
+            }
+        });
+    }
 }
 
 
