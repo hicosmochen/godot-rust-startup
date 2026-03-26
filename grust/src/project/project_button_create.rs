@@ -291,24 +291,61 @@ impl ProjectButtonCreate {
 
         match execute_modify() {
             Ok(_) => {
-                godot_print!("结果成功");
+                godot_print!("modify cargo toml 创建完毕了");
                 self.send_message_to_rich(format!("modify cargo toml 创建完毕了"));
+                self.modify_lib_rs();
             }
             Err(_e) => {
-                godot_print!("结果失败");
+                godot_print!("modify cargo toml 创建失败了");
                 self.send_message_to_rich(format!("modify cargo toml 创建失败了"));
             }
         }
     }
 
-    /*
-        1、 需要创建 lib.rs 文件, 加入必须的数据
-        2、 创建 godot 的文件夹
-        3、 在文件夹当中, 需要创建文件 project.godot
-        4、 需要创建文件 my_game.gdextension 文件中写入数据 
-        5、 往 my_game.gdextension 文件中写入配置数据
-        6、 启动 godot --editor
-        7、 需要修改配置文件的路径信息:  C:\Users\Administrator\AppData\Roaming\Godot\projects.cfg
-    */
+    // 需要创建 lib.rs 文件, 并且加入必须的数据
+    #[func]
+    fn modify_lib_rs(&mut self) {
+        // 定义需要操作的路径
+        let lib_rs_path = format!("{}/{}/src/lib.rs", self.work_space, self.rust_root);
+        // 定义需要操作的文本内容
+        let content = r#"use godot::prelude::*;
+struct MyExtension;
 
+#[gdextension]
+unsafe impl ExtensionLibrary for MyExtension {
+
+}"#;
+
+        // 封装逻辑以使用 ? 语法
+        let execute_modify = || -> Result<(), Box<dyn std::error::Error>> {
+            std::fs::write(&lib_rs_path, content.to_string())?;
+            Ok(())
+        };
+
+        match execute_modify() {
+            Ok(_) => {
+                godot_print!("modify lib rs 创建完毕了");
+                self.send_message_to_rich(format!("modify lib rs 创建完毕了"));
+                self.create_godot_project();
+            }
+            Err(_e) => {
+                godot_print!("modify lib rs  创建失败了");
+                self.send_message_to_rich(format!("modify lib rs  创建失败了"));
+            }
+        }
+    }
+
+
+    /*
+        1、 创建 godot 的文件夹
+        2、 在文件夹当中, 需要创建文件 project.godot
+        3、 需要创建文件 my_game.gdextension 文件中写入数据 
+        4、 往 my_game.gdextension 文件中写入配置数据
+        5、 启动 godot --editor
+        6、 需要修改配置文件的路径信息:  C:\Users\Administrator\AppData\Roaming\Godot\projects.cfg
+    */
+    #[func]
+    fn create_godot_project(&mut self) {
+        godot_print!("创建 godot 的文件夹");
+    }
 }
