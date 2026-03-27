@@ -48,10 +48,10 @@ impl IColorRect for MainMenu {
         let mut menu_popup_exit = menu_button_exit.get_popup().unwrap();
 
         // 3. 添加菜单项
-        menu_popup_config.add_item("Godot启动文件");
+         menu_popup_config.add_item("rust安装路径");
         menu_popup_config.set_item_id(0, 1001);
         menu_popup_config.add_separator();           // 分割线
-        menu_popup_config.add_item("rust安装路径");
+        menu_popup_config.add_item("Godot启动文件");
         menu_popup_config.set_item_id(2, 1002);
 
         menu_popup_about.add_item("版本信息");
@@ -137,14 +137,14 @@ impl MainMenu {
     fn on_menu_item_pressed(&mut self, id: i64) {
         match id {
             1001 => {
+                godot_print!("点击了：rust安装路径");
+                // 启动文件夹类型的对话框
+                self.open_dir_dialog(r"选择rust的 .cargo 路径".to_string())
+            },
+            1002 => {
                 godot_print!("点击了：Godot启动文件");
                 // 启动文件类型的对话框
                 self.open_file_dialog(r"选择godot的启动文件exe".to_string())
-            },
-            1002 => {
-                godot_print!("点击了：rust安装路径");
-                // 启动文件夹类型的对话框
-                self.open_dir_dialog(r"选择rust的 cargo\bin 路径".to_string())
             },
             3001 => {
                 godot_print!("点击了：rust版本信息");

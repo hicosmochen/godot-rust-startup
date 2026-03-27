@@ -33,6 +33,6 @@ impl ILabel for AboutVersionText {
 impl AboutVersionText {
     #[func]
     fn get_version(&self) -> String {
-        "260323".to_string()
+        "2026.0327.1602".to_string()
     }
 }

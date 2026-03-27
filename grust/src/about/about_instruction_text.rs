@@ -44,8 +44,9 @@ impl AboutInstructionText {
 
 2. 操作前提
         您在使用的软件之前, 需要做下面的几点配置:
-        A. 【环境配置】 --> 【Godot启动文件】 配置 Godot的启动文件 exe 文件。 例如: 找到 Godot 的快捷方式
-        B. 【环境配置】 --> 【rust安装路径】  需要找到 .cargo 的文件夹。 例如:  C:\Users\Administrator\.cargo
+        A. 【环境配置】 --> 【rust安装路径】  需要找到 .cargo 的文件夹。 例如:  C:\Users\Administrator\.cargo
+        B. 【环境配置】 --> 【Godot启动文件】 配置 Godot的启动文件 exe 文件。 例如: 找到 Godot 的快捷方式
+
 
 3. 操作步骤
         当您做完前面的操作前提配置之后, 就可以开始 项目的创建了。您可以选择【项目创建】来创建 rust-godot 项目
