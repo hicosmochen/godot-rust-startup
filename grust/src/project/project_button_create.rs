@@ -93,6 +93,7 @@ impl IButton for ProjectButtonCreate {
             }else if msg.to_string() == "CARGO_BUILD_PROJECT" {
                 godot_print!("cargo build project 创建完毕了");
                 self.send_message_to_rich(format!("cargo build project 创建完毕了"));
+                self.create_main_scene();
             }
         }
     }
@@ -544,7 +545,6 @@ windows.debug.x86_64 = "res://../{}/target/debug/{}.dll""#,
 
                 self.send_message_to_rich(format!("是否需要创建Demo案例: {}", self.create_demo));
 
-
                 // 这里判断是否需要创建 Demo 程序?
                 if self.create_demo {
                     self.append_mod_declaration();
@@ -689,7 +689,85 @@ impl INode for NodeHello {
     }
 
 
+    // 创建主场景
+    #[func]
+    fn create_main_scene(&mut self){
+        // 1. 定义场景路径（通常在项目根目录下的 scenes 或直接在 res://）
+        // 注意：这里的路径应指向你的 Godot 项目根目录
+        let scene_path = format!("{}/godot/main.tscn", self.work_space);
 
+        // 2. 构造 TSCN 内容
+        // [node name="NodeHello" type="NodeHello"] 这里的 type 必须与你 Rust 中 #[class(base=Node)] 定义的类名一致
+        let scene_content = r#"[gd_scene format=3 uid="uid://c8x7y6z5w4v3u"]
+
+    [node name="MainRoot" type="NodeHello"]
+    "#;
+
+        // 3. 写入文件（覆盖模式）
+         let execute_modify = || -> Result<(), Box<dyn std::error::Error>> {
+            fs::File::create(&scene_path)?;
+            std::fs::write(&scene_path, scene_content)?; // 现在可以正常使用了
+            println!("场景文件 main.tscn 已创建");
+            Ok(())
+        };
+
+        match execute_modify() {
+            Ok(_) => {
+                godot_print!("create main scene 创建完毕了");
+                self.send_message_to_rich(format!("create main scene 主场景 创建完毕了"));
+                self.set_as_main_scene();
+            }
+            Err(_e) => {
+                godot_print!("create main scene 创建失败了");
+                self.send_message_to_rich(format!("create main scene  创建失败了"));
+            }
+        }
+    }
+
+
+
+    // 设置场景为主场景
+    #[func]
+    fn set_as_main_scene(&mut self) {
+        let config_path = format!("{}/godot/project.godot", self.work_space);
+        let main_scene_line = r#"run/main_scene="res://main.tscn""#;
+
+        // 1. 尝试读取文件逻辑 (使用 match 代替 ?，因为当前函数不返回 Result)
+        let modify_result = (|| -> Result<(), Box<dyn std::error::Error>> {
+            let mut content = std::fs::read_to_string(&config_path)?;
+
+            // 2. 修改逻辑
+            if !content.contains("run/main_scene") {
+                if let Some(pos) = content.find("[application]") {
+                    let insert_pos = content[pos..].find('\n').map(|i| pos + i + 1).unwrap_or(pos + "[application]".len());
+                    content.insert_str(insert_pos, &format!("{}\n", main_scene_line));
+                } else {
+                    content.push_str(&format!("\n[application]\n{}\n", main_scene_line));
+                }
+            } else {
+                // 如果你希望路径不对时也能自动修复，可以取消下面这行的注释：
+                // content = content.lines().map(|line| if line.starts_with("run/main_scene") { main_scene_line } else { line }).collect::<Vec<_>>().join("\n");
+            }
+
+            // 3. 写入文件 (fs::write 会自动覆盖，不需要先 File::create)
+            std::fs::write(&config_path, content)?;
+            Ok(())
+        })(); // 注意这里的 () 表示立即执行这个闭包
+
+        // 4. 在函数内部根据结果进行 UI 反馈
+        match modify_result {
+            Ok(_) => {
+                godot_print!("set as main scene 修改成功");
+                self.send_message_to_rich(format!("set as main scene 主场景 设置成功"));
+                self.start_up_godot();
+            }
+            Err(e) => {
+                // 打印具体错误 e 方便你调试（比如文件没找到或拒绝访问）
+                godot_print!("set as main scene 失败: {:?}", e);
+                self.send_message_to_rich(format!("set as main scene 修改失败: {}", e));
+            }
+        }
+    }
 
     
     // 子线程中, 启动 godot 工具
