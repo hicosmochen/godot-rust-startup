@@ -70,7 +70,7 @@ impl IButton for ProjectButtonCreate {
                 messages.push(msg);
             }
         }
-        // 2. 此时不可变借用已结束，可以安全地进行可变借用  CARGO_BUILD
+        // 2. 此时不可变借用已结束，可以安全地进行可变借用  CARGO_BUILD_PROJECT
         for msg in messages {
             if msg.to_string() == "CARGO_SUCCESS"{
                 godot_print!("Cargo 创建完毕了xxx");
@@ -90,6 +90,9 @@ impl IButton for ProjectButtonCreate {
             }else if msg.to_string() == "GODOT_START_UP" {
                 godot_print!("godot start up 创建完毕了");
                 self.send_message_to_rich(format!("godot start up 创建完毕了"));
+            }else if msg.to_string() == "CARGO_BUILD_PROJECT" {
+                godot_print!("cargo build project 创建完毕了");
+                self.send_message_to_rich(format!("cargo build project 创建完毕了"));
             }
         }
     }
@@ -341,7 +344,7 @@ unsafe impl ExtensionLibrary for MyExtension {
             Ok(_) => {
                 godot_print!("modify lib rs 创建完毕了");
                 self.send_message_to_rich(format!("modify lib rs 创建完毕了"));
-                self.cargo_build_init();
+                self.cargo_build("CARGO_BUILD_INIT".to_string());
             }
             Err(_e) => {
                 godot_print!("modify lib rs  创建失败了");
@@ -356,7 +359,7 @@ unsafe impl ExtensionLibrary for MyExtension {
     
     // 自动化实现 （执行命令） cargo  build
     #[func]
-    fn cargo_build_init(&mut self){
+    fn cargo_build(&mut self, action: String){
         let cargo_path =  format!("{}/bin/cargo.exe", self.path_rust);
         // 需要执行下面的命令
         let work_space_clone =  format!("{}/{}", self.work_space, self.rust_root);
@@ -387,7 +390,7 @@ unsafe impl ExtensionLibrary for MyExtension {
             match output {
                Ok(out) => {
                     if out.status.success() {
-                        let _ = tx.send("CARGO_BUILD_INIT".to_string());
+                        let _ = tx.send(action);
                     } else {
                         // 关键修正 2: 捕获并发送真正的错误信息
                         let error_msg = String::from_utf8_lossy(&out.stderr);
@@ -538,14 +541,23 @@ windows.debug.x86_64 = "res://../{}/target/debug/{}.dll""#,
                 godot_print!("modify godot projects 创建完毕了");
                 self.send_message_to_rich(format!("modify godot projects 创建完毕了"));
 
-                let mut scene_tree = self.base().get_tree().expect("无法获取 SceneTree");
-                // 关键点：在 create_timer 后面加上 .expect(...) 或 .unwrap()
-                scene_tree.create_timer(2.0)
-                    .expect("无法创建计时器")
-                    .connect(
-                        "timeout", 
-                        &self.base().callable("start_up_godot")
-                );
+
+                self.send_message_to_rich(format!("是否需要创建Demo案例: {}", self.create_demo));
+
+
+                // 这里判断是否需要创建 Demo 程序?
+                if self.create_demo {
+                    self.append_mod_declaration();
+                }else{
+                    let mut scene_tree = self.base().get_tree().expect("无法获取 SceneTree");
+                        // 关键点：在 create_timer 后面加上 .expect(...) 或 .unwrap()
+                        scene_tree.create_timer(2.0)
+                            .expect("无法创建计时器")
+                            .connect(
+                                "timeout", 
+                                &self.base().callable("start_up_godot")
+                        );
+                }
             }
             Err(_e) => {
                 godot_print!("modify godot projects  创建失败了");
@@ -553,6 +565,131 @@ windows.debug.x86_64 = "res://../{}/target/debug/{}.dll""#,
             }
         }
     }
+
+
+
+
+    // 需要创建 lib.rs 文件中追加内容
+    #[func]
+    fn append_mod_declaration(&mut self) {
+        let librs_path =  format!("{}/{}/src/lib.rs", self.work_space, self.rust_root);
+
+        let target_mod = "mod node_hello;"; // 注意：Rust 模块声明通常带分号
+
+        // 1. 尝试读取现有内容
+        // 如果文件不存在，这里会返回 Err，建议先做判断
+        let content;
+        if Path::new(&librs_path).exists() {
+            match fs::read_to_string(&librs_path) {
+                Ok(c) => content = c,
+                Err(e) => {
+                    godot_print!("读取 lib.rs 失败: {}", e);
+                    return;
+                }
+            }
+        } else {
+            godot_print!("文件不存在: {}", librs_path);
+            return;
+        }
+
+        // 2. 检查是否已经包含该模块声明
+        // 使用 .contains 检查，可以避免重复添加
+        if content.contains(target_mod) {
+            godot_print!("lib.rs 已包含 {}，跳过修改。", target_mod);
+            return;
+        }
+
+        // 3. 执行追加操作
+        let execute_append = || -> Result<(), std::io::Error> {
+            let mut file = OpenOptions::new()
+                .append(true)
+                .open(librs_path)?;
+
+            // 确保新行开始，并在末尾添加换行符以保持代码整洁
+            let entry = if content.ends_with('\n') {
+                format!("{}\n", target_mod)
+            } else {
+                format!("\n{}\n", target_mod)
+            };
+
+            file.write_all(entry.as_bytes())?;
+            Ok(())
+        };
+
+        match execute_append() {
+            Ok(_) => {
+                godot_print!("成功在 lib.rs 中添加模块声明");
+                self.send_message_to_rich(format!("成功在 lib.rs 中添加模块声明"));
+                self.create_file_node_hello();
+            },
+            Err(e) => {
+                godot_print!("写入 lib.rs 失败: {}", e);
+                self.send_message_to_rich(format!("写入 lib.rs 失败"));
+            },
+        }
+    }
+
+
+    // 创建 node_hello 文件
+    #[func]
+    fn create_file_node_hello(&mut self) {
+        godot_print!("需要创建文件 create file node hello 文件中写入数据 ");
+        // 定义需要操作的路径
+        let file_node_hello_path = format!("{}/{}/src/node_hello.rs", self.work_space, self.rust_root);
+  
+        // 准备要写入的内容
+        let content = r#"use godot::prelude::*;
+use godot::classes::{Node, INode};
+
+#[derive(GodotClass)]
+#[class(base=Node)]
+pub struct NodeHello {
+    base: Base<Node>
+}
+
+#[godot_api]
+impl NodeHello {
+    #[func]
+    fn say_hello(&self) {
+        godot_print!("NodeHello...say_hello");
+    }
+}
+
+#[godot_api]
+impl INode for NodeHello {
+    fn init(base: Base<Node>) -> Self {
+        godot_print!("NodeHello...init");
+        Self { base }
+    }
+
+    fn ready(&mut self) {
+        godot_print!("NodeHello...ready");
+        self.say_hello();
+    }
+}
+"#; 
+        // 封装逻辑以使用 ? 语法
+        let execute_modify = || -> Result<(), Box<dyn std::error::Error>> {
+            fs::File::create(&file_node_hello_path)?; // 注意加了 &
+            std::fs::write(&file_node_hello_path, content)?; // 现在可以正常使用了
+            Ok(())
+        };
+
+        match execute_modify() {
+            Ok(_) => {
+                godot_print!("create file node hello 创建完毕了");
+                self.send_message_to_rich(format!("create file node hello 创建完毕了"));
+                self.cargo_build("CARGO_BUILD_PROJECT".to_string());
+            }
+            Err(_e) => {
+                godot_print!("create file node hello  创建失败了");
+                self.send_message_to_rich(format!("create file node hello  创建失败了"));
+            }
+        }
+    }
+
+
+
 
     
     // 子线程中, 启动 godot 工具
