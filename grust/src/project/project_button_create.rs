@@ -4,12 +4,18 @@ use godot::classes::{Button, IButton}; // 导入需要的 UI 类
 use godot::classes::ConfigFile;  // 正确导入 配置文件信息
 
 use std::fs;
+use std::fs::OpenOptions;
 use std::path::Path;
 use std::sync::mpsc;
+use std::process::Command;
 use std::os::windows::process::CommandExt; // 必须导入
+use std::io::Write;
+use std::env;
+use std::path::PathBuf;
 
 use crate::project::project_richtext::ProjectRichTextLabel;
 use crate::secure::secure_storage::SecureStorage;
+
 
 
 #[derive(GodotClass)]
@@ -64,7 +70,7 @@ impl IButton for ProjectButtonCreate {
                 messages.push(msg);
             }
         }
-        // 2. 此时不可变借用已结束，可以安全地进行可变借用  CARGO_ERROR
+        // 2. 此时不可变借用已结束，可以安全地进行可变借用  CARGO_BUILD
         for msg in messages {
             if msg.to_string() == "CARGO_SUCCESS"{
                 godot_print!("Cargo 创建完毕了xxx");
@@ -77,6 +83,13 @@ impl IButton for ProjectButtonCreate {
             }else if msg.to_string() == "CARGO_ERROR" {
                 godot_print!("add godot 创建失败了xxx");
                 self.send_message_to_rich(format!("add godot 创建完毕了"));
+            }else if msg.to_string() == "CARGO_BUILD_INIT" {
+                godot_print!("cargo build init 创建完毕了");
+                self.send_message_to_rich(format!("cargo build init 创建完毕了"));
+                self.create_godot_project();
+            }else if msg.to_string() == "GODOT_START_UP" {
+                godot_print!("godot start up 创建完毕了");
+                self.send_message_to_rich(format!("godot start up 创建完毕了"));
             }
         }
     }
@@ -328,7 +341,7 @@ unsafe impl ExtensionLibrary for MyExtension {
             Ok(_) => {
                 godot_print!("modify lib rs 创建完毕了");
                 self.send_message_to_rich(format!("modify lib rs 创建完毕了"));
-                self.create_godot_project();
+                self.cargo_build_init();
             }
             Err(_e) => {
                 godot_print!("modify lib rs  创建失败了");
@@ -336,6 +349,60 @@ unsafe impl ExtensionLibrary for MyExtension {
             }
         }
     }
+
+
+
+
+    
+    // 自动化实现 （执行命令） cargo  build
+    #[func]
+    fn cargo_build_init(&mut self){
+        let cargo_path =  format!("{}/bin/cargo.exe", self.path_rust);
+        // 需要执行下面的命令
+        let work_space_clone =  format!("{}/{}", self.work_space, self.rust_root);
+
+        let (tx, rx) = mpsc::channel();
+        self.receiver = Some(rx); // 将接收端交给主线程轮询
+        std::thread::spawn(move || {
+            // 1. 发送开始信号
+            let _ = tx.send("任务开始...".to_string());
+
+            // Windows 隐藏窗口标志位
+            const CREATE_NO_WINDOW: u32 = 0x08000000;
+
+            // 2. 执行耗时操作
+            let mut binding = std::process::Command::new(cargo_path);
+            let cmd = binding.arg("build")
+                .current_dir(work_space_clone);
+
+            // 仅在 Windows 下配置隐藏窗口
+            #[cfg(windows)]
+            {
+                cmd.creation_flags(CREATE_NO_WINDOW);
+            }
+
+            let output = cmd.output();
+
+            // 3. 发送结果
+            match output {
+               Ok(out) => {
+                    if out.status.success() {
+                        let _ = tx.send("CARGO_BUILD_INIT".to_string());
+                    } else {
+                        // 关键修正 2: 捕获并发送真正的错误信息
+                        let error_msg = String::from_utf8_lossy(&out.stderr);
+                        let _ = tx.send(format!("CARGO_ERROR: {}", error_msg));
+                    }
+                }
+                Err(e) => {
+                    let _ = tx.send(format!("PROCESS_FAIL: {}", e));
+                }
+            }
+        });
+    }
+
+
+
 
 
     #[func]
@@ -377,6 +444,7 @@ unsafe impl ExtensionLibrary for MyExtension {
     }
 
 
+    // 创建 gdextension 文件
     #[func]
     fn create_file_gdextension(&mut self) {
         godot_print!("需要创建文件 create file gdextension 文件中写入数据 ");
@@ -411,7 +479,8 @@ windows.debug.x86_64 = "res://../{}/target/debug/{}.dll""#,
             Ok(_) => {
                 godot_print!("create file gdextension 创建完毕了");
                 self.send_message_to_rich(format!("create file gdextension 创建完毕了"));
-                self.start_up_godot();
+                // 准备修改配置文件
+                self.modify_godot_projects();
             }
             Err(_e) => {
                 godot_print!("create file gdextension  创建失败了");
@@ -421,12 +490,88 @@ windows.debug.x86_64 = "res://../{}/target/debug/{}.dll""#,
     }
 
     
-    /*
-        3、 启动 godot --editor
-        4、 需要修改配置文件的路径信息:  C:\Users\Administrator\AppData\Roaming\Godot\projects.cfg
-    */
+
+    // 修改godot 项目的配置文件信息, 让当前创建的项目, 在项目列表中展示
+    // 路径 C:\Users\Administrator\AppData\Roaming\Godot\projects.cfg 
+    #[func]
+    fn modify_godot_projects(&mut self) {
+        // 自动获取当前用户的 AppData/Roaming 路径
+        let mut config_path = PathBuf::from(env::var("APPDATA").unwrap());
+        config_path.push("Godot");
+        config_path.push("projects.cfg");
+
+        if config_path.exists() == false {
+            godot_print!("未找到配置文件，请确认 Godot 是否已安装并在该用户下运行过。");
+            return
+        }
+
+        // 封装逻辑以使用 ? 语法
+        let execute_modify = || -> Result<(), Box<dyn std::error::Error>> {
+            let godot_project_path_str = format!("{}/godot", self.work_space);
+
+            let mut file = OpenOptions::new().append(true).open(&config_path)?;
+            let entry = format!(
+                    "\n[{}]\n\nfavorite=false\n", 
+                    godot_project_path_str
+                );
+            file.write_all(entry.as_bytes())?;
+            Ok(())
+        };
+
+        match execute_modify() {
+            Ok(_) => {
+                godot_print!("modify godot projects 创建完毕了");
+                self.send_message_to_rich(format!("modify godot projects 创建完毕了"));
+
+                let mut scene_tree = self.base().get_tree().expect("无法获取 SceneTree");
+                // 关键点：在 create_timer 后面加上 .expect(...) 或 .unwrap()
+                scene_tree.create_timer(2.0)
+                    .expect("无法创建计时器")
+                    .connect(
+                        "timeout", 
+                        &self.base().callable("start_up_godot")
+                );
+            }
+            Err(_e) => {
+                godot_print!("modify godot projects  创建失败了");
+                self.send_message_to_rich(format!("modify godot projects  创建失败了"));
+            }
+        }
+    }
+
+    
+    // 子线程中, 启动 godot 工具
     #[func]
     fn start_up_godot(&mut self) {
         godot_print!("start up godot 创建完毕了");
+        // 1. 定义目标工作目录
+        let path_godot = self.path_godot.clone();
+        let godot_progect_path = format!("{}/godot/", self.work_space);
+
+         godot_print!("start up godot path: {}" , path_godot);
+
+        let (tx, rx) = mpsc::channel();
+        self.receiver = Some(rx); // 将接收端交给主线程轮询
+        std::thread::spawn(move || {
+            // 1. 发送开始信号
+            let _ = tx.send("任务开始...".to_string());
+ 
+            // 2. 创建并配置命令
+            let child = Command::new(path_godot) // 确保 godot 已加入环境变量，否则请使用绝对路径
+                .arg("godot")
+                .arg("--editor")                    // 传递编辑器参数
+                .current_dir(godot_progect_path)    // 设置执行路径（相当于在该文件夹下打开终端）
+                .spawn();                          // 执行并等待返回结果
+
+            match child {
+                Ok(_child_process) => {
+                    // 3. 进程启动成功，立即发送信号
+                    let _ = tx.send("GODOT_START_UP".to_string());
+                }
+                Err(e) => {
+                    let _ = tx.send(format!("PROCESS_FAIL: {}", e));
+                }
+            }
+        });
     }
 }
