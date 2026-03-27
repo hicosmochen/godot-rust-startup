@@ -77,31 +77,37 @@ impl IButton for ProjectButtonCreate {
         for msg in messages {
             if msg.to_string() == "CARGO_SUCCESS"{
                 self.update_progress_value(10.0);
-                godot_print!("Cargo 创建完毕了xxx");
-                self.send_message_to_rich(format!("Cargo 创建完毕了"));
+                godot_print!("Cargo create done");
+                self.send_message_to_rich(format!("Cargo create done"), 0);
                 self.cargo_add_godot();
             }else if msg.to_string() == "ADD_GODOT_SUCCESS" {
                 self.update_progress_value(20.0);
-                godot_print!("add godot 创建完毕了xxx");
-                self.send_message_to_rich(format!("add godot 创建完毕了"));
+                godot_print!("add godot command execution done");
+                self.send_message_to_rich(format!("add godot command execution done"), 0);
                 self.modify_cargo_toml();
             }else if msg.to_string() == "CARGO_ERROR" {
-                godot_print!("add godot 创建失败了xxx");
-                self.send_message_to_rich(format!("add godot 创建完毕了"));
+                godot_print!("add godot command execution fail");
+                self.send_message_to_rich(format!("add godot command execution fail"), 1);
             }else if msg.to_string() == "CARGO_BUILD_INIT" {
                 self.update_progress_value(40.0);
-                godot_print!("cargo build init 创建完毕了");
-                self.send_message_to_rich(format!("cargo build init 创建完毕了"));
+                godot_print!("cargo build init done");
+                self.send_message_to_rich(format!("cargo build init done"), 0);
                 self.create_godot_project();
             }else if msg.to_string() == "GODOT_START_UP" {
-                godot_print!("godot start up 创建完毕了");
+                godot_print!("godot project start up done");
+                godot_print!("all operations have been completed.");
                 self.update_progress_value(100.0);
                 self.base_mut().set_disabled(false);
-                self.send_message_to_rich(format!("godot start up 创建完毕了"));
+                self.send_message_to_rich(format!("godot project start up done"), 0);
+                self.send_message_to_rich(format!("all operations have been completed."), 2);
+                self.send_message_to_rich(format!("------------------------------------------------------"), 0);
             }else if msg.to_string() == "CARGO_BUILD_PROJECT" {
-                godot_print!("cargo build project 创建完毕了");
-                self.send_message_to_rich(format!("cargo build project 创建完毕了"));
+                godot_print!("cargo build project done");
+                self.send_message_to_rich(format!("cargo build project done"), 0);
                 self.create_main_scene();
+            }else if msg.to_string().contains("PROCESS_FAIL") {
+                godot_print!("process fail");
+                self.send_message_to_rich(format!("process fail : {}", msg), 1);
             }
         }
     }
@@ -113,12 +119,27 @@ impl ProjectButtonCreate {
 
     // 发送信息给 富文本显示内容
     #[func]
-    pub fn send_message_to_rich(&mut self, message: String){
-        self.base().get_tree().unwrap().call_group(
-                        "log_receivers", 
-                        "on_add_log", 
-                        &[message.to_variant()]
-                    );
+    pub fn send_message_to_rich(&mut self, message: String, log_type: i64){
+        // 1. 将字符串映射为 StringName
+        let method_name = match log_type {
+            1 => "on_add_log_fail",
+            2 => "on_add_log_success",
+            3 => "on_add_log_emphasize",
+            _ => "on_add_log", // 默认情况
+        };
+
+        // 2. 安全获取 SceneTree
+        if let Some(mut tree) = self.base().get_tree() {
+            // 3. 使用 call_group 发送信号
+            // 注意：method_name 需要转换为 StringName
+            tree.call_group(
+                "log_receivers", 
+                method_name, 
+                &[message.to_variant()]
+            );
+        } else {
+            godot_warn!("无法获取 SceneTree，消息发送失败");
+        }
     }
 
 
@@ -176,26 +197,34 @@ impl ProjectButtonCreate {
             .to::<bool>();
 
         if self.path_godot.is_empty(){
-            self.send_message_to_rich(format!("Godot 的路径不能为空"));
+            self.send_message_to_rich(format!("Godot 的路径不能为空"), 0);
             return false;
         }
         
         if self.path_rust.is_empty(){
-            self.send_message_to_rich(format!("Rust 的路径不能为空"));
+            self.send_message_to_rich(format!("Rust 的路径不能为空"), 0);
             return false;
         }
         
         if self.work_space.is_empty(){
-            self.send_message_to_rich(format!("工作空间 的路径不能为空"));
+            self.send_message_to_rich(format!("工作空间 的路径不能为空"), 0);
              return false;
         }
         
         if self.gdext_name.is_empty(){
-            self.send_message_to_rich(format!("gdext的名称不能为空"));
+            self.send_message_to_rich(format!("gdext的名称不能为空"), 0);
              return false;
         }
         // 更新进度值
         self.update_progress_value(5.0);
+
+        let cargo_path =  format!("{}/bin/cargo.exe", self.path_rust);
+        let godot_path = format!("{}", self.path_godot);
+
+        self.send_message_to_rich(format!("cargo路径: {cargo_path}"), 3);
+        self.send_message_to_rich(format!("godot路径: {godot_path}"), 3);
+        self.send_message_to_rich(format!("------------------------------------------------------"),  0);
+
         return true;
     }
 
@@ -204,7 +233,6 @@ impl ProjectButtonCreate {
     #[func]
     fn creat_rust_project(&mut self) {
         let cargo_path =  format!("{}/bin/cargo.exe", self.path_rust);
-        self.send_message_to_rich(format!("cargo: {cargo_path}"));
 
         // 克隆变量以进入线程闭包
         let rust_root = self.rust_root.clone();
@@ -316,15 +344,15 @@ impl ProjectButtonCreate {
 
         match execute_modify() {
             Ok(_) => {
-                godot_print!("modify cargo toml 创建完毕了");
-                self.send_message_to_rich(format!("modify cargo toml 创建完毕了"));
+                godot_print!("modify cargo toml create done");
+                self.send_message_to_rich(format!("modify cargo toml create done"), 0);
                 // 更新进度值
                 self.update_progress_value(25.0);
                 self.modify_lib_rs();
             }
             Err(_e) => {
-                godot_print!("modify cargo toml 创建失败了");
-                self.send_message_to_rich(format!("modify cargo toml 创建失败了"));
+                godot_print!("modify cargo toml create fail");
+                self.send_message_to_rich(format!("modify cargo toml create fail"), 1);
             }
         }
     }
@@ -353,13 +381,13 @@ unsafe impl ExtensionLibrary for MyExtension {
             Ok(_) => {
                 // 更新进度值
                 self.update_progress_value(30.0);
-                godot_print!("modify lib rs 创建完毕了");
-                self.send_message_to_rich(format!("modify lib rs 创建完毕了"));
+                godot_print!("modify lib rs done");
+                self.send_message_to_rich(format!("modify lib rs done"), 0);
                 self.cargo_build("CARGO_BUILD_INIT".to_string());
             }
             Err(_e) => {
-                godot_print!("modify lib rs  创建失败了");
-                self.send_message_to_rich(format!("modify lib rs  创建失败了"));
+                godot_print!("modify lib rs fail");
+                self.send_message_to_rich(format!("modify lib rs fail"), 1);
             }
         }
     }
@@ -432,8 +460,8 @@ unsafe impl ExtensionLibrary for MyExtension {
                 godot_print!("创建文件夹失败: {}", e);
                 return;
             }
-            self.send_message_to_rich("文件夹 godot 创建成功".to_string());
-            godot_print!("文件夹 godot 创建成功");
+            self.send_message_to_rich(format!("dir godot create success"), 0);
+            godot_print!("dir godot create success");
         }
 
         // 3. 定义并执行创建文件逻辑
@@ -448,13 +476,13 @@ unsafe impl ExtensionLibrary for MyExtension {
             Ok(_) => {
                 // 更新进度值
                 self.update_progress_value(50.0);
-                godot_print!("project.godot 创建成功");
-                self.send_message_to_rich("project.godot 创建成功".to_string());
+                godot_print!("project.godot create success");
+                self.send_message_to_rich(format!("project.godot create success"), 0);
                 self.create_file_gdextension();
             }
             Err(e) => {
-                godot_print!("project.godot 创建失败了: {}", e);
-                self.send_message_to_rich(format!("project.godot 创建失败: {}", e));
+                godot_print!("project.godot create fail: {}", e);
+                self.send_message_to_rich(format!("project.godot create fail: {}", e), 0);
             }
         }
     }
@@ -504,14 +532,14 @@ windows.debug.x86_64 = "res://../{}/target/debug/{}.dll""#,
             Ok(_) => {
                 // 更新进度值
                 self.update_progress_value(55.0);
-                godot_print!("create file gdextension 创建完毕了");
-                self.send_message_to_rich(format!("create file gdextension 创建完毕了"));
+                godot_print!("create file gdextension create success");
+                self.send_message_to_rich(format!("create file gdextension create success"), 0);
                 // 准备修改配置文件
                 self.modify_godot_projects();
             }
             Err(_e) => {
-                godot_print!("create file gdextension  创建失败了");
-                self.send_message_to_rich(format!("create file gdextension  创建失败了"));
+                godot_print!("create file gdextension create fail");
+                self.send_message_to_rich(format!("create file gdextension create fail"), 1);
             }
         }
     }
@@ -564,9 +592,9 @@ windows.debug.x86_64 = "res://../{}/target/debug/{}.dll""#,
             Ok(_) => {
                 // 更新进度值
                 self.update_progress_value(60.0);
-                godot_print!("modify godot projects 创建完毕了");
-                self.send_message_to_rich(format!("modify godot projects 创建完毕了"));
-                self.send_message_to_rich(format!("是否需要创建Demo案例: {}", self.create_demo));
+                godot_print!("modify godot projects done");
+                self.send_message_to_rich(format!("modify godot projects done"), 0);
+                self.send_message_to_rich(format!("is need create demo : {}", self.create_demo), 0);
 
                 // 这里判断是否需要创建 Demo 程序?
                 if self.create_demo {
@@ -583,8 +611,8 @@ windows.debug.x86_64 = "res://../{}/target/debug/{}.dll""#,
                 }
             }
             Err(_e) => {
-                godot_print!("modify godot projects  创建失败了");
-                self.send_message_to_rich(format!("modify godot projects  创建失败了"));
+                godot_print!("modify godot projects fail");
+                self.send_message_to_rich(format!("modify godot projects fail"), 1);
             }
         }
     }
@@ -643,13 +671,13 @@ windows.debug.x86_64 = "res://../{}/target/debug/{}.dll""#,
             Ok(_) => {
                 // 更新进度值
                 self.update_progress_value(65.0);
-                godot_print!("成功在 lib.rs 中添加模块声明");
-                self.send_message_to_rich(format!("成功在 lib.rs 中添加模块声明"));
+                godot_print!("lib.rs append module success");
+                self.send_message_to_rich(format!("lib.rs append module success"), 0);
                 self.create_file_node_hello();
             },
             Err(e) => {
-                godot_print!("写入 lib.rs 失败: {}", e);
-                self.send_message_to_rich(format!("写入 lib.rs 失败"));
+                godot_print!("lib.rs append module fail: {}", e);
+                self.send_message_to_rich(format!("lib.rs append module fail"), 1);
             },
         }
     }
@@ -704,13 +732,13 @@ impl INode for NodeHello {
             Ok(_) => {
                 // 更新进度值
                 self.update_progress_value(70.0);
-                godot_print!("create file node hello 创建完毕了");
-                self.send_message_to_rich(format!("create file node hello 创建完毕了"));
+                godot_print!("create file node hello done");
+                self.send_message_to_rich(format!("create file node hello done"), 0);
                 self.cargo_build("CARGO_BUILD_PROJECT".to_string());
             }
             Err(_e) => {
-                godot_print!("create file node hello  创建失败了");
-                self.send_message_to_rich(format!("create file node hello  创建失败了"));
+                godot_print!("create file node hello fail");
+                self.send_message_to_rich(format!("create file node hello fail"), 1);
             }
         }
     }
@@ -750,13 +778,13 @@ impl INode for NodeHello {
             Ok(_) => {
                 // 更新进度值
                 self.update_progress_value(80.0);
-                godot_print!("create main scene 创建完毕了");
-                self.send_message_to_rich(format!("create main scene 主场景 创建完毕了"));
+                godot_print!("create main scene done");
+                self.send_message_to_rich(format!("create main scene done"), 0);
                 self.set_as_main_scene();
             }
             Err(_e) => {
                 godot_print!("create main scene 创建失败了");
-                self.send_message_to_rich(format!("create main scene  创建失败了"));
+                self.send_message_to_rich(format!("create main scene fail"), 1);
             }
         }
     }
@@ -796,14 +824,14 @@ impl INode for NodeHello {
             Ok(_) => {
                 // 更新进度值
                 self.update_progress_value(90.0);
-                godot_print!("set as main scene 修改成功");
-                self.send_message_to_rich(format!("set as main scene 主场景 设置成功"));
+                godot_print!("set as main scene success");
+                self.send_message_to_rich(format!("set as main scene success"), 0);
                 self.start_up_godot();
             }
             Err(e) => {
                 // 打印具体错误 e 方便你调试（比如文件没找到或拒绝访问）
                 godot_print!("set as main scene 失败: {:?}", e);
-                self.send_message_to_rich(format!("set as main scene 修改失败: {}", e));
+                self.send_message_to_rich(format!("set as main scene fail: {}", e), 1);
             }
         }
     }
@@ -817,7 +845,7 @@ impl INode for NodeHello {
         let path_godot = self.path_godot.clone();
         let godot_progect_path = format!("{}/godot/", self.work_space);
 
-         godot_print!("start up godot path: {}" , path_godot);
+         godot_print!("start up godot path: {}" , godot_progect_path);
 
         let (tx, rx) = mpsc::channel();
         self.receiver = Some(rx); // 将接收端交给主线程轮询

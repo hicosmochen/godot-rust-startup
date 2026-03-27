@@ -66,7 +66,11 @@ impl SecureStorage {
 
     // 存储数据, 以 KEY - VALUE 字符串的形式存储
     pub fn save(key: &str, value: &str) {
-        let mut my_data = Self::load_data(Self::SAVE_PATH).unwrap();
+        // 修改 save 函数的第一行
+        let mut my_data = Self::load_data(Self::SAVE_PATH).unwrap_or_else(|_| {
+            godot_print!("配置文件不存在，正在创建新配置...");
+            SecureData::default() // 如果加载失败，创建一个全为空或默认值的结构体
+        });
           
         match key {
             "path_godot" => my_data.path_godot = value.to_string(),

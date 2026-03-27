@@ -10,10 +10,10 @@ config_version=5
 
 [application]
 
-config/name="godot"
+config/name="rust-godot-code"
 run/main_scene="uid://c0o2mrgrotafn"
 config/features=PackedStringArray("4.6", "Forward Plus")
-config/icon="res://application/icon.svg"
+config/icon="uid://dm0de5qswqmd5"
 
 [display]
 

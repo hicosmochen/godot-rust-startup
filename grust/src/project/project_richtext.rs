@@ -28,11 +28,52 @@ impl ProjectRichTextLabel {
     // 注意: 如果是当前对象发给自己的信号, 直接调用此方法即可
     #[func]
     pub fn on_add_log(&mut self, text: GString){
-        let _text_str = Into::<String>::into(&text);
-        // 直接使用 GString，它实现了向 RichTextLabel 追加所需的 trait
+         let text_str = text.to_string();
+        // 根据条件选择颜色代码
+        let color_code =  "black";
+        // 构造 BBCode 字符串: [color=red]内容[/color]
+        let formatted_text = format!("[color={}]{}[/color]\n", color_code, text_str);
         let mut base = self.base_mut();
-        base.append_text(&_text_str);
-        base.append_text("\n");
+        base.append_text(&formatted_text);
+    }
+
+
+    // 失败
+    #[func]
+    pub fn on_add_log_fail(&mut self, text: GString) {
+        let text_str = text.to_string();
+        // 根据条件选择颜色代码
+        let color_code =  "red";
+        // 构造 BBCode 字符串: [color=red]内容[/color]
+        let formatted_text = format!("[color={}]{}[/color]\n", color_code, text_str);
+        let mut base = self.base_mut();
+        base.append_text(&formatted_text);
+    }
+
+
+    // 成功
+    #[func]
+    pub fn on_add_log_success(&mut self, text: GString) {
+          let text_str = text.to_string();
+        // 根据条件选择颜色代码
+        let color_code = "#038c03ff";
+        // 构造 BBCode 字符串: [color=red]内容[/color]
+        let formatted_text = format!("[color={}]{}[/color]\n", color_code, text_str);
+        let mut base = self.base_mut();
+        base.append_text(&formatted_text);
+    }
+
+
+    // 强调
+    #[func]
+    pub fn on_add_log_emphasize(&mut self, text: GString) {
+          let text_str = text.to_string();
+        // 根据条件选择颜色代码
+        let color_code = "#3504e7ff";
+        // 构造 BBCode 字符串: [color=red]内容[/color]
+        let formatted_text = format!("[color={}]{}[/color]\n", color_code, text_str);
+        let mut base = self.base_mut();
+        base.append_text(&formatted_text);
     }
 }
 
