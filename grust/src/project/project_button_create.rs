@@ -508,12 +508,27 @@ windows.debug.x86_64 = "res://../{}/target/debug/{}.dll""#,
         // 封装逻辑以使用 ? 语法
         let execute_modify = || -> Result<(), Box<dyn std::error::Error>> {
             let godot_project_path_str = format!("{}/godot", self.work_space);
+            
+            // 1. 先读取整个文件的内容
+            let content = std::fs::read_to_string(&config_path)?;
 
+            // 2. 检查路径是否已经存在（检查是否包含 "[路径]" 这种特征字符串）
+            let section_header = format!("[{}]", godot_project_path_str);
+            
+            if content.contains(&section_header) {
+                godot_print!("项目路径已存在，跳过追加。");
+                return Ok(());
+            }
+
+            // 3. 如果不存在，再以追加模式打开并写入
             let mut file = OpenOptions::new().append(true).open(&config_path)?;
+            
+            // 确保新内容另起一行，并添加配置项
             let entry = format!(
-                    "\n[{}]\n\nfavorite=false\n", 
-                    godot_project_path_str
-                );
+                "\n{}\nfavorite=false\n", 
+                section_header
+            );
+            
             file.write_all(entry.as_bytes())?;
             Ok(())
         };
