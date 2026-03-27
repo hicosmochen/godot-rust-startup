@@ -125,16 +125,7 @@ impl ProjectButtonCreate {
     }
 
 
-    
-    /*
-        开始创建项目
-            1、 创建 rust 项目
-            2、 修改 cargo 文件 ---------------------------- 自动化实现 （配置文件的修改） name = "myrust" # rust 所在的文件夹名称
-            3、 添加 godot 关联 rust ----------------------- 自动化实现 （执行命令） cargo  add  godot
-            4、 创建 godot 项目 ---------------------------- 自动化实现
-            5、 创建 gdextension 文件路径 和 文件名称 -------- 用户选择
-            6、 检测映射文件 extension_list.cfg  ----------- 自动化实现
-    */
+    // 获取数据, 对数据进行校验
     #[func]
     pub fn start_create_project(&mut self) -> bool{
         godot_print!("按钮被点击了..start_create_project.StartCreatProject");
@@ -408,7 +399,7 @@ unsafe impl ExtensionLibrary for MyExtension {
 
 
 
-
+    // 创建 godot 项目
     #[func]
     fn create_godot_project(&mut self) {
         // 1. 使用 Path 处理路径，String 类型本身没有 .exists()
@@ -448,12 +439,21 @@ unsafe impl ExtensionLibrary for MyExtension {
     }
 
 
-    // 创建 gdextension 文件
+    // 创建 gdextension 文件, 这里将 gdextension 存放到 addons 文件夹下面
     #[func]
     fn create_file_gdextension(&mut self) {
         godot_print!("需要创建文件 create file gdextension 文件中写入数据 ");
+        // 1. 先构建 addons 文件夹的路径
+        let addons_dir = format!("{}/godot/addons", self.work_space);
+        // 2. 递归创建文件夹
+        // create_dir_all 会处理多级不存在的目录
+        if let Err(e) = fs::create_dir_all(&addons_dir) {
+            eprintln!("无法创建文件夹: {}", e);
+            // 根据你的逻辑处理错误，例如 return Err(e)
+        }
+
         // 定义需要操作的路径
-        let file_gdextension_path = format!("{}/godot/{}.gdextension", self.work_space, self.gdext_name);
+        let file_gdextension_path = format!("{}/{}.gdextension", addons_dir, self.gdext_name);
         // 定义需要操作的文本内容
         // 1. 定义你的变量
         let project_name = self.rust_root.clone(); 
@@ -692,9 +692,17 @@ impl INode for NodeHello {
     // 创建主场景
     #[func]
     fn create_main_scene(&mut self){
+        // 1. 先构建 scenes 文件夹的路径
+        let scenes_dir = format!("{}/godot/scenes", self.work_space);
+        // 2. 递归创建文件夹
+        // create_dir_all 会处理多级不存在的目录
+        if let Err(e) = fs::create_dir_all(&scenes_dir) {
+            eprintln!("无法创建文件夹: {}", e);
+        }
+
         // 1. 定义场景路径（通常在项目根目录下的 scenes 或直接在 res://）
         // 注意：这里的路径应指向你的 Godot 项目根目录
-        let scene_path = format!("{}/godot/main.tscn", self.work_space);
+        let scene_path = format!("{}/main.tscn", scenes_dir);
 
         // 2. 构造 TSCN 内容
         // [node name="NodeHello" type="NodeHello"] 这里的 type 必须与你 Rust 中 #[class(base=Node)] 定义的类名一致
@@ -730,7 +738,7 @@ impl INode for NodeHello {
     #[func]
     fn set_as_main_scene(&mut self) {
         let config_path = format!("{}/godot/project.godot", self.work_space);
-        let main_scene_line = r#"run/main_scene="res://main.tscn""#;
+        let main_scene_line = r#"run/main_scene="res://scenes/main.tscn""#;
 
         // 1. 尝试读取文件逻辑 (使用 match 代替 ?，因为当前函数不返回 Result)
         let modify_result = (|| -> Result<(), Box<dyn std::error::Error>> {
