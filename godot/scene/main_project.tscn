@@ -1,18 +1,10 @@
 [gd_scene format=3 uid="uid://cnrbq0rvb7aa4"]
 
-[ext_resource type="Theme" uid="uid://bih6pafxsh8h7" path="res://theme/main_project_progress_theme.tres" id="1_cabgu"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p0nqm"]
+bg_color = Color(0.65237474, 0.48311627, 0.1695612, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wcnlx"]
-bg_color = Color(0.796858, 0.8102337, 0.9905835, 1)
-corner_radius_top_left = 18
-corner_radius_top_right = 18
-corner_radius_bottom_right = 18
-corner_radius_bottom_left = 18
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u2jjh"]
-bg_color = Color(0.6804878, 0.6976963, 0.98810893, 1)
-corner_radius_top_left = 20
-corner_radius_bottom_left = 20
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cabgu"]
+bg_color = Color(0.42791086, 0.3115164, 0.0948324, 1)
 
 [node name="MainProject" type="Node2D" unique_id=1144025142]
 
@@ -23,16 +15,16 @@ offset_bottom = 800.0
 metadata/_edit_lock_ = true
 
 [node name="ProjectProgressBar" type="ProjectProgressBar" parent="ColorRect" unique_id=1638025609]
+clip_contents = true
 layout_mode = 0
 offset_left = 10.0
 offset_top = 10.0
 offset_right = 1270.0
 offset_bottom = 55.0
-theme = ExtResource("1_cabgu")
-theme_override_colors/font_color = Color(1, 0.36729142, 0.41399705, 1)
+theme_override_colors/font_color = Color(0.99999994, 0.98026913, 0.97964233, 1)
 theme_override_font_sizes/font_size = 32
-theme_override_styles/background = SubResource("StyleBoxFlat_wcnlx")
-theme_override_styles/fill = SubResource("StyleBoxFlat_u2jjh")
+theme_override_styles/background = SubResource("StyleBoxFlat_p0nqm")
+theme_override_styles/fill = SubResource("StyleBoxFlat_cabgu")
 value = 30.0
 
 [node name="ProjectButton_01" type="ProjectButton" parent="ColorRect" unique_id=1848485195 node_paths=PackedStringArray("label_rich")]
