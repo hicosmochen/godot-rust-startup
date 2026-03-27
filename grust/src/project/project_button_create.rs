@@ -96,6 +96,7 @@ impl IButton for ProjectButtonCreate {
             }else if msg.to_string() == "GODOT_START_UP" {
                 godot_print!("godot start up 创建完毕了");
                 self.update_progress_value(100.0);
+                self.base_mut().set_disabled(false);
                 self.send_message_to_rich(format!("godot start up 创建完毕了"));
             }else if msg.to_string() == "CARGO_BUILD_PROJECT" {
                 godot_print!("cargo build project 创建完毕了");
@@ -123,10 +124,12 @@ impl ProjectButtonCreate {
 
     #[func]
     fn on_button_pressed(&mut self){
+        self.base_mut().set_disabled(true);
         if self.start_create_project(){
             godot_print!("开始创建项目");
             self.creat_rust_project();
         }else{
+            self.base_mut().set_disabled(false);
             godot_print!("条件不满足");
         }
     }
