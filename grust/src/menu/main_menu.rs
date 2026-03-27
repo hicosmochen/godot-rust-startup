@@ -57,11 +57,14 @@ impl IColorRect for MainMenu {
         menu_popup_about.add_item("版本信息");
         menu_popup_about.set_item_id(0, 3001);
         menu_popup_about.add_separator();           // 分割线
-        menu_popup_about.add_item("帮助文档");
+        menu_popup_about.add_item("使用说明");
         menu_popup_about.set_item_id(2, 3002);
         menu_popup_about.add_separator();           // 分割线
-        menu_popup_about.add_item("联系作者");
+        menu_popup_about.add_item("帮助文档");
         menu_popup_about.set_item_id(4, 3003);
+        menu_popup_about.add_separator();           // 分割线
+        menu_popup_about.add_item("联系作者");
+        menu_popup_about.set_item_id(6, 3004);
 
         menu_popup_exit.add_item("最小化窗口");
         menu_popup_exit.set_item_id(0, 4001);
@@ -147,12 +150,16 @@ impl MainMenu {
                 godot_print!("点击了：rust版本信息");
                 self.append_to_scene("about_version".to_string());
             },
-            3002 => {
+             3002 => {
+                godot_print!("点击了：使用说明");
+                self.append_to_scene("about_instruction".to_string());
+            },
+            3003 => {
                 godot_print!("点击了：rust帮助文档");
                 let url = "https://blog.csdn.net/ShiShiLunHui/article/details/159385949?spm=1011.2415.3001.5331".to_string();
                 self.open_url(url);
             },
-            3003 => {
+            3004 => {
                 godot_print!("点击了：rust联系作者");
                  self.append_to_scene("about_author".to_string());
             },
