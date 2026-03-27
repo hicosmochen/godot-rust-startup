@@ -14,6 +14,7 @@ use std::env;
 use std::path::PathBuf;
 
 use crate::project::project_richtext::ProjectRichTextLabel;
+use crate::project::project_progress::ProjectProgressBar;
 use crate::secure::secure_storage::SecureStorage;
 
 
@@ -35,6 +36,7 @@ pub struct ProjectButtonCreate {
     rust_root  : String,
     gdext_name : String,
     create_demo : bool,
+    time_accumulator: f64, // 新增：用于计时
 }
 
 
@@ -52,6 +54,7 @@ impl IButton for ProjectButtonCreate {
             rust_root : "".to_string(),
             gdext_name : "".to_string(),
             create_demo : false,
+            time_accumulator: 0.5,
         }
     }
 
@@ -73,10 +76,12 @@ impl IButton for ProjectButtonCreate {
         // 2. 此时不可变借用已结束，可以安全地进行可变借用  CARGO_BUILD_PROJECT
         for msg in messages {
             if msg.to_string() == "CARGO_SUCCESS"{
+                self.update_progress_value(10.0);
                 godot_print!("Cargo 创建完毕了xxx");
                 self.send_message_to_rich(format!("Cargo 创建完毕了"));
                 self.cargo_add_godot();
             }else if msg.to_string() == "ADD_GODOT_SUCCESS" {
+                self.update_progress_value(20.0);
                 godot_print!("add godot 创建完毕了xxx");
                 self.send_message_to_rich(format!("add godot 创建完毕了"));
                 self.modify_cargo_toml();
@@ -84,11 +89,13 @@ impl IButton for ProjectButtonCreate {
                 godot_print!("add godot 创建失败了xxx");
                 self.send_message_to_rich(format!("add godot 创建完毕了"));
             }else if msg.to_string() == "CARGO_BUILD_INIT" {
+                self.update_progress_value(40.0);
                 godot_print!("cargo build init 创建完毕了");
                 self.send_message_to_rich(format!("cargo build init 创建完毕了"));
                 self.create_godot_project();
             }else if msg.to_string() == "GODOT_START_UP" {
                 godot_print!("godot start up 创建完毕了");
+                self.update_progress_value(100.0);
                 self.send_message_to_rich(format!("godot start up 创建完毕了"));
             }else if msg.to_string() == "CARGO_BUILD_PROJECT" {
                 godot_print!("cargo build project 创建完毕了");
@@ -184,7 +191,9 @@ impl ProjectButtonCreate {
             self.send_message_to_rich(format!("gdext的名称不能为空"));
              return false;
         }
-         return true;
+        // 更新进度值
+        self.update_progress_value(5.0);
+        return true;
     }
 
 
@@ -221,7 +230,10 @@ impl ProjectButtonCreate {
 
             // 3. 发送结果
             match output {
-                Ok(_) => { let _ = tx.send("CARGO_SUCCESS".to_string()); }
+                Ok(_) => { 
+                    // 更新进度值
+                    let _ = tx.send("CARGO_SUCCESS".to_string()); 
+                }
                 Err(e) => { let _ = tx.send(format!("CARGO_FAIL: {}", e)); }
             }
         });
@@ -303,6 +315,8 @@ impl ProjectButtonCreate {
             Ok(_) => {
                 godot_print!("modify cargo toml 创建完毕了");
                 self.send_message_to_rich(format!("modify cargo toml 创建完毕了"));
+                // 更新进度值
+                self.update_progress_value(25.0);
                 self.modify_lib_rs();
             }
             Err(_e) => {
@@ -334,6 +348,8 @@ unsafe impl ExtensionLibrary for MyExtension {
 
         match execute_modify() {
             Ok(_) => {
+                // 更新进度值
+                self.update_progress_value(30.0);
                 godot_print!("modify lib rs 创建完毕了");
                 self.send_message_to_rich(format!("modify lib rs 创建完毕了"));
                 self.cargo_build("CARGO_BUILD_INIT".to_string());
@@ -427,6 +443,8 @@ unsafe impl ExtensionLibrary for MyExtension {
 
         match execute_modify() {
             Ok(_) => {
+                // 更新进度值
+                self.update_progress_value(50.0);
                 godot_print!("project.godot 创建成功");
                 self.send_message_to_rich("project.godot 创建成功".to_string());
                 self.create_file_gdextension();
@@ -481,6 +499,8 @@ windows.debug.x86_64 = "res://../{}/target/debug/{}.dll""#,
 
         match execute_modify() {
             Ok(_) => {
+                // 更新进度值
+                self.update_progress_value(55.0);
                 godot_print!("create file gdextension 创建完毕了");
                 self.send_message_to_rich(format!("create file gdextension 创建完毕了"));
                 // 准备修改配置文件
@@ -539,10 +559,10 @@ windows.debug.x86_64 = "res://../{}/target/debug/{}.dll""#,
 
         match execute_modify() {
             Ok(_) => {
+                // 更新进度值
+                self.update_progress_value(60.0);
                 godot_print!("modify godot projects 创建完毕了");
                 self.send_message_to_rich(format!("modify godot projects 创建完毕了"));
-
-
                 self.send_message_to_rich(format!("是否需要创建Demo案例: {}", self.create_demo));
 
                 // 这里判断是否需要创建 Demo 程序?
@@ -618,6 +638,8 @@ windows.debug.x86_64 = "res://../{}/target/debug/{}.dll""#,
 
         match execute_append() {
             Ok(_) => {
+                // 更新进度值
+                self.update_progress_value(65.0);
                 godot_print!("成功在 lib.rs 中添加模块声明");
                 self.send_message_to_rich(format!("成功在 lib.rs 中添加模块声明"));
                 self.create_file_node_hello();
@@ -677,6 +699,8 @@ impl INode for NodeHello {
 
         match execute_modify() {
             Ok(_) => {
+                // 更新进度值
+                self.update_progress_value(70.0);
                 godot_print!("create file node hello 创建完毕了");
                 self.send_message_to_rich(format!("create file node hello 创建完毕了"));
                 self.cargo_build("CARGO_BUILD_PROJECT".to_string());
@@ -721,6 +745,8 @@ impl INode for NodeHello {
 
         match execute_modify() {
             Ok(_) => {
+                // 更新进度值
+                self.update_progress_value(80.0);
                 godot_print!("create main scene 创建完毕了");
                 self.send_message_to_rich(format!("create main scene 主场景 创建完毕了"));
                 self.set_as_main_scene();
@@ -765,6 +791,8 @@ impl INode for NodeHello {
         // 4. 在函数内部根据结果进行 UI 反馈
         match modify_result {
             Ok(_) => {
+                // 更新进度值
+                self.update_progress_value(90.0);
                 godot_print!("set as main scene 修改成功");
                 self.send_message_to_rich(format!("set as main scene 主场景 设置成功"));
                 self.start_up_godot();
@@ -811,5 +839,21 @@ impl INode for NodeHello {
                 }
             }
         });
+    }
+
+    // 更新进度值的操作
+    #[func]
+    fn update_progress_value(&mut self, delta: f64) {
+        // 累加每次执行的时间间隔
+        self.time_accumulator += delta;
+
+        // 只有当时间超过 0.5 秒时才执行更新
+        if self.time_accumulator >= 0.5 {
+            let mut progress_bar = self.base().get_node_as::<ProjectProgressBar>("../ProjectProgressBar");
+            progress_bar.bind_mut().set_progress(delta);
+            
+            // 重置计时器（或者减去 0.5 以保持更高精度）
+            self.time_accumulator = 0.0;
+        }
     }
 }
