@@ -25,6 +25,10 @@ window/size/maximize_disabled=true
 window/subwindows/embed_subwindows=false
 window/stretch/mode="viewport"
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://application/internationality/internationality.de_DE.translation", "res://application/internationality/internationality.en_US.translation", "res://application/internationality/internationality.es_ES.translation", "res://application/internationality/internationality.fr_FR.translation", "res://application/internationality/internationality.it_IT.translation", "res://application/internationality/internationality.ja_JP.translation", "res://application/internationality/internationality.ko_KR.translation", "res://application/internationality/internationality.zh_CN.translation", "res://application/internationality/internationality.zh_TW.translation")
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

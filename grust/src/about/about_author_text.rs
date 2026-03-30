@@ -18,7 +18,8 @@ impl ILabel for AboutAuthorText {
     fn ready(&mut self) {
         let email = self.get_email();
         let mut node = self.base_mut();
-        let email_message = format!("邮箱地址: {}", email);
+        let translated_text_email_address = node.tr("email_address");
+        let email_message = format!("{}: {}", translated_text_email_address.to_string(), email);
         node.set_text(&email_message);
 
         // 加载外部主题文件

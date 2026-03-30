@@ -94,9 +94,23 @@ impl IButton for ProjectButtonCreate {
         for event in events {
             match event {
                 // 匹配键: Status 提取值: msg
-                BuildEvent :: Status(msg) => {
-                     godot_print!("状态更新: {}", msg);
-                     self.send_message_to_rich(msg, 0);
+                BuildEvent :: Status(status) => {
+                    godot_print!("状态更新: {}", status); 
+                    match status.as_str() {
+                        "STATUS_CREATE_RUST" => {
+                            let translated_text_create_rust_project = self.base_mut().tr("create_rust_project");
+                            self.send_message_to_rich(format!("{translated_text_create_rust_project}"), 0);
+                        },
+                        "STATUS_COMPILING_RUST" => {
+                            let translated_text_compiling_rust = self.base_mut().tr("compiling_rust");
+                            self.send_message_to_rich(format!("{translated_text_compiling_rust}"), 0);
+                        },
+                        "STATUS_START_GODOT" => {
+                            let translated_text_starting_godot = self.base_mut().tr("starting_godot");
+                            self.send_message_to_rich(format!("{translated_text_starting_godot}"), 0);
+                        },
+                        _=> godot_print!("未匹配到合适的类型"),
+                    }
                 },
                 // 匹配键: Progress 提取值 Val
                 BuildEvent :: Progress(val) => {
@@ -130,7 +144,8 @@ impl IButton for ProjectButtonCreate {
                 BuildEvent::Error(err_type, detail) => {
                     match err_type.as_str() {
                         "WORKSPACE_INVALID_PATH" => {
-                            self.send_message_to_rich(format!("工作空间不存在: {}", self.work_space), 1);
+                            let translated_text_work_space_does_not_exist = self.base_mut().tr("work_space_does_not_exist");
+                            self.send_message_to_rich(format!("{}: {}", translated_text_work_space_does_not_exist.to_string(), self.work_space), 1);
                             self.base_mut().set_disabled(false);
                         },
                         _=> {
@@ -258,8 +273,11 @@ impl ProjectButtonCreate {
         let cargo_path =  format!("{}/bin/cargo.exe", self.path_rust);
         let godot_path = format!("{}", self.path_godot);
 
-        self.send_message_to_rich(format!("cargo路径: {cargo_path}"), 3);
-        self.send_message_to_rich(format!("godot路径: {godot_path}"), 3);
+
+        let translated_text_cargo_path = self.base_mut().tr("cargo_path");
+        self.send_message_to_rich(format!("{translated_text_cargo_path}: {cargo_path}"), 3);
+        let translated_text_godot_path = self.base_mut().tr("godot_path");
+        self.send_message_to_rich(format!("{translated_text_godot_path}: {godot_path}"), 3);
         self.send_message_to_rich(format!("------------------------------------------------------"),  0);
 
         return true;
@@ -279,7 +297,7 @@ impl ProjectButtonCreate {
         self.receiver = Some(rx); // 将接收端交给主线程轮询
         std::thread::spawn(move || {
             // 1. 发送开始信号
-            let _ = tx.send(BuildEvent::Status(format!("正在创建.rust.项目..")));
+            let _ = tx.send(BuildEvent::Status(format!("STATUS_CREATE_RUST")));
 
             // Windows 隐藏窗口标志位
             const CREATE_NO_WINDOW: u32 = 0x08000000;
@@ -450,9 +468,8 @@ unsafe impl ExtensionLibrary for MyExtension {
         self.receiver = Some(rx);
 
         thread::spawn(move || {
-            let _ = tx.send(BuildEvent::Status(format!("正在编译..rust...")));
+            let _ = tx.send(BuildEvent::Status(format!("STATUS_COMPILING_RUST")));
             
-
             #[cfg(windows)]
             const CREATE_NO_WINDOW: u32 = 0x08000000;
 
@@ -926,8 +943,8 @@ impl INode for NodeHello {
         self.receiver = Some(rx); // 将接收端交给主线程轮询
         std::thread::spawn(move || {
             // 1. 发送开始信号
-            let _ = tx.send(BuildEvent::Status(format!("正在启动.godot..")));
- 
+            let _ = tx.send(BuildEvent::Status(format!("STATUS_START_GODOT")));
+            
             // 2. 创建并配置命令
             let child = Command::new(path_godot) // 确保 godot 已加入环境变量，否则请使用绝对路径
                 .arg("godot")

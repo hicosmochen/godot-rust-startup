@@ -24,16 +24,20 @@ impl IColorRect for MainMenu {
     fn ready(&mut self) {
         // 1. 实例化 MenuButton
         let mut menu_button_config = MenuButton::new_alloc();
-        menu_button_config.set_text("环境配置 (config)");
+        let translated_text_config = self.base().tr("environment_configuration");
+        menu_button_config.set_text(translated_text_config.to_godot());
 
         let mut menu_button_project = MenuButton::new_alloc();
-        menu_button_project.set_text("项目创建 (project)");
+        let translated_text_project = self.base().tr("project_creation");
+        menu_button_project.set_text(translated_text_project.to_godot());
 
         let mut menu_button_about = MenuButton::new_alloc();
-        menu_button_about.set_text("关于软件 (about)");
+        let translated_text_about = self.base().tr("about_software");
+        menu_button_about.set_text(translated_text_about.to_godot());
 
         let mut menu_button_exit = MenuButton::new_alloc();
-        menu_button_exit.set_text("退出软件 (exit)");
+        let translated_text_exit = self.base().tr("exit_software");
+        menu_button_exit.set_text(translated_text_exit.to_godot());
         
         // 设置位置
         menu_button_config.set_position(Vector2::new(20.0, 20.0));
@@ -48,28 +52,35 @@ impl IColorRect for MainMenu {
         let mut menu_popup_exit = menu_button_exit.get_popup().unwrap();
 
         // 3. 添加菜单项
-         menu_popup_config.add_item("rust安装路径");
+        let translated_text_rust_path = self.base().tr("rust_installation_path");
+        menu_popup_config.add_item(translated_text_rust_path.to_godot());
         menu_popup_config.set_item_id(0, 1001);
         menu_popup_config.add_separator();           // 分割线
-        menu_popup_config.add_item("Godot启动文件");
+        let translated_text_godot_file = self.base().tr("godot_startup_file");
+        menu_popup_config.add_item(translated_text_godot_file.to_godot());
         menu_popup_config.set_item_id(2, 1002);
-
-        menu_popup_about.add_item("版本信息");
+        let translated_text_version_information = self.base().tr("version_information");
+        menu_popup_about.add_item(translated_text_version_information.to_godot());
         menu_popup_about.set_item_id(0, 3001);
         menu_popup_about.add_separator();           // 分割线
-        menu_popup_about.add_item("使用说明");
+        let translated_text_instructions_for_use = self.base().tr("instructions_for_use");
+        menu_popup_about.add_item(translated_text_instructions_for_use.to_godot());
         menu_popup_about.set_item_id(2, 3002);
         menu_popup_about.add_separator();           // 分割线
-        menu_popup_about.add_item("帮助文档");
+        let translated_text_instructions_help_documentation = self.base().tr("help_documentation");
+        menu_popup_about.add_item(translated_text_instructions_help_documentation.to_godot());
         menu_popup_about.set_item_id(4, 3003);
         menu_popup_about.add_separator();           // 分割线
-        menu_popup_about.add_item("联系作者");
+        let translated_text_instructions_contact_the_author = self.base().tr("contact_the_author");
+        menu_popup_about.add_item(translated_text_instructions_contact_the_author.to_godot());
         menu_popup_about.set_item_id(6, 3004);
 
-        menu_popup_exit.add_item("最小化窗口");
+        let translated_text_minimize_window = self.base().tr("minimize_window");
+        menu_popup_exit.add_item(translated_text_minimize_window.to_godot());
         menu_popup_exit.set_item_id(0, 4001);
         menu_popup_exit.add_separator();           // 分割线
-        menu_popup_exit.add_item("退出程序");
+        let translated_text_exit_program = self.base().tr("exit_program");
+        menu_popup_exit.add_item(translated_text_exit_program.to_godot());
         menu_popup_exit.set_item_id(2, 4002);
 
 
@@ -139,12 +150,14 @@ impl MainMenu {
             1001 => {
                 godot_print!("点击了：rust安装路径");
                 // 启动文件夹类型的对话框
-                self.open_dir_dialog(r"选择rust的 .cargo 路径".to_string())
+                let translated_text_select_cargo_path = self.base().tr("select_cargo_path");
+                self.open_dir_dialog(translated_text_select_cargo_path.to_string())
             },
             1002 => {
                 godot_print!("点击了：Godot启动文件");
                 // 启动文件类型的对话框
-                self.open_file_dialog(r"选择godot的启动文件exe".to_string())
+                let translated_text_select_godot_launcher = self.base().tr("select_godot_launcher");
+                self.open_file_dialog(translated_text_select_godot_launcher.to_string())
             },
             3001 => {
                 godot_print!("点击了：rust版本信息");

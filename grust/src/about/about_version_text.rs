@@ -18,7 +18,8 @@ impl ILabel for AboutVersionText {
     fn ready(&mut self) {
         let version = self.get_version();
         let mut node = self.base_mut();
-        let version_message = format!("当前版本: {}", version);
+        let translated_text_current_version = node.tr("current_version");
+        let version_message = format!("{}: {}", translated_text_current_version.to_string(), version);
         node.set_text(&version_message);
 
         // 加载外部主题文件
@@ -33,6 +34,6 @@ impl ILabel for AboutVersionText {
 impl AboutVersionText {
     #[func]
     fn get_version(&self) -> String {
-        "2026.0327.1602".to_string()
+        "2026.0327.1603".to_string()
     }
 }

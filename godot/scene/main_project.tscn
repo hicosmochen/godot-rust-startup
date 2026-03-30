@@ -35,7 +35,7 @@ offset_top = 83.0
 offset_right = 346.0
 offset_bottom = 183.0
 theme_override_font_sizes/font_size = 40
-text = "选择工作空间"
+text = "select_workspace"
 
 [node name="ProjectButton_02" type="ProjectButton" parent="ColorRect" unique_id=218071344 node_paths=PackedStringArray("label_rich")]
 kind = 1
@@ -46,7 +46,7 @@ offset_top = 200.0
 offset_right = 346.0
 offset_bottom = 300.0
 theme_override_font_sizes/font_size = 40
-text = "RUST根目录名"
+text = "rust_root_directory"
 
 [node name="ProjectButton_03" type="ProjectButton" parent="ColorRect" unique_id=1075447110 node_paths=PackedStringArray("label_rich")]
 kind = 2
@@ -57,7 +57,7 @@ offset_top = 323.0
 offset_right = 346.0
 offset_bottom = 423.0
 theme_override_font_sizes/font_size = 40
-text = "gdext 名称"
+text = "gdext_name"
 
 [node name="ProjectButton_04" type="ProjectButton" parent="ColorRect" unique_id=763152581 node_paths=PackedStringArray("label_rich")]
 kind = 3
@@ -68,7 +68,7 @@ offset_top = 447.0
 offset_right = 346.0
 offset_bottom = 547.0
 theme_override_font_sizes/font_size = 40
-text = "需要创建案例"
+text = "case_needs_to_be_created"
 
 [node name="ProjectButton_05" type="ProjectButtonCreate" parent="ColorRect" unique_id=245370042 node_paths=PackedStringArray("label_rich")]
 label_rich = NodePath("../ProjectRichTextLabel")
@@ -78,7 +78,7 @@ offset_top = 565.0
 offset_right = 346.0
 offset_bottom = 665.0
 theme_override_font_sizes/font_size = 40
-text = "开始创建项目"
+text = "start_creating_project"
 
 [node name="ProjectRichTextLabel" type="ProjectRichTextLabel" parent="ColorRect" unique_id=53858156]
 layout_mode = 0

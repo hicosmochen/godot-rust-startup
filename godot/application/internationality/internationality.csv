@@ -1,0 +1,33 @@
+﻿KEYS,en_US,zh_CN,zh_TW,ja_JP,ko_KR,de_DE,fr_FR,es_ES,it_IT
+language_desc,英语,简体中文,繁体中文,日语,韩语,德语,法语,西班牙语,意大利语
+environment_configuration,Environment configuration,环境配置,環境配置,環境設定,환경 구성,Umgebungskonfiguration,Configuration de l'environnement,Configuración del entorno,Configurazione ambiente
+project_creation,Project creation,项目创建,專案創建,プロジェクト作成,프로젝트 생성,Projekterstellung,Création de projet,Creación de proyectos,Creazione del progetto
+about_software,About the software,关于软件,關於軟體,ソフトウェアについて,소프트웨어에 대하여,Über die Software,À propos du logiciel,Acerca del software,Informazioni sul software
+exit_software,Exit the software,退出软件,退出軟體,ソフトウェアを終了してください。,소프트웨어를 종료하세요,Beenden Sie die Software,Quitter le logiciel,Salir del software,Esci dal software
+diy_template_tool,DIY RUST-GODOT template tool,自制RUST-GODOT模板工具,自製RUST-GODOT模板工具,DIY RUST-GODOTテンプレートツール,DIY 러스트-고닷 템플릿 도구,DIY RUST-GODOT Schablonenwerkzeug,Outil de gabarit DIY RUST-GODOT,Herramienta de plantilla DIY RUST-GODOT,Strumento fai-da-te per la creazione di modelli RUST-GODOT
+rust_installation_path,Rust installation path,rust安装路径,rust安裝路徑,Rustのインストールパス,Rust 설치 경로,Rust-Installationspfad,Chemin d'installation de Rust,Ruta de instalación de Rust,percorso di installazione di Rust
+godot_startup_file,Godot startup file,Godot启动文件,Godot啟動文件,Godotの起動ファイル,Godot 시작 파일,Godot-Startdatei,fichier de démarrage Godot,archivo de inicio de Godot,Risoluzione di avvio di Godot
+select_cargo_path,Select the .cargo path for Rust.,选择rust的.cargo路径,選擇rust的.cargo路徑,Rust の .cargo パスを選択してください。,Rust용 .cargo 경로를 선택하세요.,Wählen Sie den .cargo-Pfad für Rust aus.,Sélectionnez le chemin .cargo pour Rust.,Seleccione la ruta .cargo para Rust.,Seleziona il percorso .cargo per Rust.
+select_godot_launcher,Select the godot launcher file (exe).,选择godot的启动文件exe,選擇godot的啟動檔exe,Godotランチャーファイル（exeファイル）を選択してください。,Godot 실행 파일(exe)을 선택하세요.,Wählen Sie die Godot-Launcherdatei (exe) aus.,Sélectionnez le fichier lanceur Godot (exe).,Seleccione el archivo de inicio de Godot (exe).,Seleziona il file di avvio di Godot (exe).
+select_workspace,Select workspace,选择工作空间,選擇工作空間,ワークスペースを選択,작업 공간을 선택하세요,Arbeitsbereich auswählen,Sélectionner l'espace de travail,Seleccionar espacio de trabajo,Seleziona l'area di lavoro
+rust_root_directory,Rust root directory,rust根目录,rust根目錄,Rustのルートディレクトリ,Rust 루트 디렉토리,Rust-Stammverzeichnis,Répertoire racine Rust,Directorio raíz de Rust,directory radice di Rust
+gdext_name,gdext name,gdext名称,gdext名稱,gdext名,gdext 이름,gdext name,nom gdext,nombre gdext,nome gdext
+case_needs_to_be_created,Case needs to be created,需要创建案例,需要創建案例,ケースを作成する必要があります,사건을 생성해야 합니다.,Es muss ein Fall erstellt werden,Il faut créer un dossier.,Es necesario crear un caso.,È necessario creare un caso
+start_creating_project,Start creating a project,开始创建项目,開始創建專案,プロジェクトの作成を開始する,프로젝트 생성을 시작하세요,Beginnen Sie mit der Erstellung eines Projekts,Commencez à créer un projet,Comienza a crear un proyecto,Inizia a creare un progetto
+we_need_to_create_study_project,Do we need to create a case study project?,是否需要创建案例项目,是否需要建立案例項目,ケーススタディプロジェクトを作成する必要はありますか？,사례 연구 프로젝트를 만들어야 할까요?,Müssen wir ein Fallstudienprojekt erstellen?,Faut-il créer un projet d'étude de cas ?,¿Necesitamos crear un proyecto de estudio de caso?,Dobbiamo creare un progetto di studio di caso?
+cancel,cancel,取消,取消,キャンセル,취소,Stornieren,Annuler,Cancelar,Cancellare
+confirm,confirm,确认,確認,確認する,확인하다,bestätigen,confirmer,confirmar,confermare
+create_rust_project,Creating .rust project,正在创建.rust.项目,正在創建.rust.項目,.godot を起動しています...,.rust 프로젝트 생성 중,Erstellung eines .rust-Projekts,Création d'un projet .rust,Creando un proyecto .rust,Creazione del progetto .rust
+work_space_does_not_exist,Workspace does not exist,工作空间不存在,工作空間不存在,ワークスペースが存在しません,워크스페이스가 존재하지 않습니다.,Der Arbeitsbereich existiert nicht.,L'espace de travail n'existe pas.,El espacio de trabajo no existe,Lo spazio di lavoro non esiste
+cargo_path,cargo path,cargo路径,cargo路徑,貨物経路,화물 경로,Frachtweg,voie de fret,ruta de carga,percorso di carico
+godot_path,godot path,godot路径,godot路徑,ゴドーの道,고도 경로,Godot-Pfad,chemin godot,Camino de Godot,percorso di Godot
+compiling_rust,Compiling Rust...,正在编译..rust...,正在編譯..rust...,Rustをコンパイルしています...,Rust 컴파일 중...,Rust wird kompiliert...,Compilation de Rust...,Compilando Rust...,Compilazione di Rust...
+starting_godot,Starting .godot...,正在启动.godot..,正在啟動.godot..,.godot を起動しています...,.godot 시작 중...,Starte .godot...,Démarrage de .godot...,Iniciando .godot...,Inizio .godot...
+version_information,Version information,版本信息,版本資訊,バージョン情報,버전 정보,Versionsinformationen,Informations sur la version,Información de la versión,Informazioni sulla versione
+instructions_for_use,Instructions for use,使用说明,使用說明,使用説明書,사용 설명서,Gebrauchsanweisung,Instructions d'utilisation,Instrucciones de uso,Istruzioni per l'uso
+help_documentation,Help documentation,帮助文档,幫助文檔,ヘルプドキュメント,도움말 문서,Hilfedokumentation,Documentation d'aide,Documentación de ayuda,Documentazione di supporto
+contact_the_author,Contact the author,联系作者,聯繫作者,著者に連絡する,저자에게 연락하세요,Kontaktieren Sie den Autor,Contacter l'auteur,Contacta con el autor,Contatta l'autore
+current_version,Current version,当前版本,目前版本,現在のバージョン,현재 버전,Aktuelle Version,Version actuelle,Versión actual,Versione attuale
+email_address,Email address,邮箱地址,郵件地址,電子メールアドレス,이메일 주소,E-Mail-Adresse,Adresse email,Dirección de correo electrónico,Indirizzo e-mail
+minimize_window,Minimize window,最小化窗口,最小化視窗,ウィンドウを最小化する,창 최소화,Fenster minimieren,Réduire la fenêtre,Minimizar ventana,Riduci a icona la finestra
+exit_program,Exit Program,退出程序,退出程序,退出プログラム,퇴학 프로그램,Ausstiegsprogramm,Sortie du programme,Programa de salida,Programma di uscita

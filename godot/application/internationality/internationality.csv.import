@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://c0wx36icr1i00"
+
+[deps]
+
+files=["res://application/internationality/internationality.en_US.translation", "res://application/internationality/internationality.zh_CN.translation", "res://application/internationality/internationality.zh_TW.translation", "res://application/internationality/internationality.ja_JP.translation", "res://application/internationality/internationality.ko_KR.translation", "res://application/internationality/internationality.de_DE.translation", "res://application/internationality/internationality.fr_FR.translation", "res://application/internationality/internationality.es_ES.translation", "res://application/internationality/internationality.it_IT.translation"]
+
+source_file="res://application/internationality/internationality.csv"
+dest_files=["res://application/internationality/internationality.en_US.translation", "res://application/internationality/internationality.zh_CN.translation", "res://application/internationality/internationality.zh_TW.translation", "res://application/internationality/internationality.ja_JP.translation", "res://application/internationality/internationality.ko_KR.translation", "res://application/internationality/internationality.de_DE.translation", "res://application/internationality/internationality.fr_FR.translation", "res://application/internationality/internationality.es_ES.translation", "res://application/internationality/internationality.it_IT.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true
