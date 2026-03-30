@@ -7,11 +7,15 @@ use std::fs;
 use std::fs::OpenOptions;
 use std::path::Path;
 use std::sync::mpsc;
-use std::process::Command;
 use std::os::windows::process::CommandExt; // 必须导入
 use std::io::Write;
 use std::env;
 use std::path::PathBuf;
+
+use std::process::{Command, Stdio};
+use std::io::{BufRead, BufReader};
+use std::thread;
+
 
 use crate::project::project_richtext::ProjectRichTextLabel;
 use crate::project::project_progress::ProjectProgressBar;
@@ -28,7 +32,7 @@ pub struct ProjectButtonCreate {
     pub label_rich: Option<Gd<ProjectRichTextLabel>>,
 
     // 使用 Option 包装，因为在 init 时还没有通道
-    receiver: Option<mpsc::Receiver<String>>,
+    receiver: Option<mpsc::Receiver<BuildEvent>>,
 
     path_rust  : String,
     path_godot : String,
@@ -37,6 +41,19 @@ pub struct ProjectButtonCreate {
     gdext_name : String,
     create_demo : bool,
     time_accumulator: f64, // 新增：用于计时
+}
+
+
+
+
+// 定义消息类型，每一项都是一个“键”，括号内是它携带的“值”
+#[derive(Debug)]
+enum BuildEvent {
+    Status(String),           // 键：状态，值：字符串描述
+    Progress(f64),            // 键：进度，值：浮点数
+    Error(String, String),    // 键：错误，值：(错误类型, 详细描述)
+    Log(String),              // 键：日志，值：单行文本
+    Complete(String),         // 键：完成，值：动作名称
 }
 
 
@@ -66,48 +83,68 @@ impl IButton for ProjectButtonCreate {
 
 
     fn process(&mut self, _delta: f64) {
-        let mut messages = Vec::new();
+        let mut events = Vec::new();
         // 1. 快速检查通道，仅不可变借用 self.receiver
         if let Some(ref rx) = self.receiver {
-            while let Ok(msg) = rx.try_recv() {
-                messages.push(msg);
+            while let Ok(event) = rx.try_recv() {
+                events.push(event);
             }
         }
-        // 2. 此时不可变借用已结束，可以安全地进行可变借用  CARGO_BUILD_PROJECT
-        for msg in messages {
-            if msg.to_string() == "CARGO_SUCCESS"{
-                self.update_progress_value(10.0);
-                godot_print!("Cargo create done");
-                self.send_message_to_rich(format!("Cargo create done"), 0);
-                self.cargo_add_godot();
-            }else if msg.to_string() == "ADD_GODOT_SUCCESS" {
-                self.update_progress_value(20.0);
-                godot_print!("add godot command execution done");
-                self.send_message_to_rich(format!("add godot command execution done"), 0);
-                self.modify_cargo_toml();
-            }else if msg.to_string() == "CARGO_ERROR" {
-                godot_print!("add godot command execution fail");
-                self.send_message_to_rich(format!("add godot command execution fail"), 1);
-            }else if msg.to_string() == "CARGO_BUILD_INIT" {
-                self.update_progress_value(40.0);
-                godot_print!("cargo build init done");
-                self.send_message_to_rich(format!("cargo build init done"), 0);
-                self.create_godot_project();
-            }else if msg.to_string() == "GODOT_START_UP" {
-                godot_print!("godot project start up done");
-                godot_print!("all operations have been completed.");
-                self.update_progress_value(100.0);
-                self.base_mut().set_disabled(false);
-                self.send_message_to_rich(format!("godot project start up done"), 0);
-                self.send_message_to_rich(format!("all operations have been completed."), 2);
-                self.send_message_to_rich(format!("------------------------------------------------------"), 0);
-            }else if msg.to_string() == "CARGO_BUILD_PROJECT" {
-                godot_print!("cargo build project done");
-                self.send_message_to_rich(format!("cargo build project done"), 0);
-                self.create_main_scene();
-            }else if msg.to_string().contains("PROCESS_FAIL") {
-                godot_print!("process fail");
-                self.send_message_to_rich(format!("process fail : {}", msg), 1);
+        // 2. 处理键值对
+        for event in events {
+            match event {
+                // 匹配键: Status 提取值: msg
+                BuildEvent :: Status(msg) => {
+                     godot_print!("状态更新: {}", msg);
+                     self.send_message_to_rich(msg, 0);
+                },
+                // 匹配键: Progress 提取值 Val
+                BuildEvent :: Progress(val) => {
+                    self.update_progress_value(val);
+                },
+                // 匹配键：Complete，根据不同的动作值跳转逻辑
+                BuildEvent::Complete(action) => {
+                    match action.as_str() {
+                        "CARGO_SUCCESS" => {
+                            self.cargo_add_godot();
+                        },
+                        "ADD_GODOT_SUCCESS" => {
+                            self.modify_cargo_toml();
+                        },
+                         "CARGO_BUILD_INIT" => {
+                            self.create_godot_project();
+                        },
+                        "CARGO_BUILD_PROJECT" => {
+                            self.create_main_scene();
+                        },
+                        "GODOT_START_UP" => {
+                            self.base_mut().set_disabled(false);
+                            self.send_message_to_rich(format!("godot project start up done"), 0);
+                            self.send_message_to_rich(format!("all operations have been completed."), 2);
+                            self.send_message_to_rich(format!("------------------------------------------------------"), 0);
+                        },
+                        _ => godot_print!("未知动作完成: {}", action),
+                    }
+                }
+                // 匹配键：Error，提取值：err_type 和 detail
+                BuildEvent::Error(err_type, detail) => {
+                    match err_type.as_str() {
+                        "WORKSPACE_INVALID_PATH" => {
+                            self.send_message_to_rich(format!("工作空间不存在: {}", self.work_space), 1);
+                            self.base_mut().set_disabled(false);
+                        },
+                        _=> {
+                            godot_print!("发生错误 [{}]: {}", err_type, detail);
+                            self.send_message_to_rich(format!("{}: {}", err_type, detail), 1);
+                            self.base_mut().set_disabled(false);
+                        },
+                    }
+                }
+
+                // 匹配键：Log，提取值：text
+                BuildEvent::Log(text) => {
+                    self.send_message_to_rich(text, 0);
+                }
             }
         }
     }
@@ -242,7 +279,8 @@ impl ProjectButtonCreate {
         self.receiver = Some(rx); // 将接收端交给主线程轮询
         std::thread::spawn(move || {
             // 1. 发送开始信号
-            let _ = tx.send("任务开始...".to_string());
+            let _ = tx.send(BuildEvent::Status(format!("正在创建.rust.项目..")));
+
             // Windows 隐藏窗口标志位
             const CREATE_NO_WINDOW: u32 = 0x08000000;
 
@@ -262,10 +300,16 @@ impl ProjectButtonCreate {
             // 3. 发送结果
             match output {
                 Ok(_) => { 
-                    // 更新进度值
-                    let _ = tx.send("CARGO_SUCCESS".to_string()); 
+                    // 完成
+                    let _ = tx.send(BuildEvent::Complete(format!("CARGO_SUCCESS")));
                 }
-                Err(e) => { let _ = tx.send(format!("CARGO_FAIL: {}", e)); }
+                Err(e) => { 
+                    let _ = tx.send(BuildEvent::Error(format!("CARGO_FAIL"), format!("{}", e))); 
+                    if let Some(267) = e.raw_os_error() {
+                        // 专门处理“目录名称无效”的情况
+                        let _ = tx.send(BuildEvent::Error(format!("WORKSPACE_INVALID_PATH"), "".to_string()));
+                    }
+                }
             }
         });
     }
@@ -282,7 +326,7 @@ impl ProjectButtonCreate {
         self.receiver = Some(rx); // 将接收端交给主线程轮询
         std::thread::spawn(move || {
             // 1. 发送开始信号
-            let _ = tx.send("任务开始...".to_string());
+            let _ = tx.send(BuildEvent::Status(format!("正在关联.godot.到.rust...")));
 
             // Windows 隐藏窗口标志位
             const CREATE_NO_WINDOW: u32 = 0x08000000;
@@ -305,15 +349,15 @@ impl ProjectButtonCreate {
             match output {
                Ok(out) => {
                     if out.status.success() {
-                        let _ = tx.send("ADD_GODOT_SUCCESS".to_string());
+                        let _ = tx.send(BuildEvent::Complete(format!("ADD_GODOT_SUCCESS")));
                     } else {
                         // 关键修正 2: 捕获并发送真正的错误信息
                         let error_msg = String::from_utf8_lossy(&out.stderr);
-                        let _ = tx.send(format!("CARGO_ERROR: {}", error_msg));
+                        let _ = tx.send(BuildEvent::Error(format!("CARGO_FAIL"), format!("{}", error_msg))); 
                     }
                 }
                 Err(e) => {
-                    let _ = tx.send(format!("PROCESS_FAIL: {}", e));
+                    let _ = tx.send(BuildEvent::Error(format!("PROCESS_FAIL"), format!("{}", e))); 
                 }
             }
         });
@@ -398,46 +442,77 @@ unsafe impl ExtensionLibrary for MyExtension {
     
     // 自动化实现 （执行命令） cargo  build
     #[func]
-    fn cargo_build(&mut self, action: String){
-        let cargo_path =  format!("{}/bin/cargo.exe", self.path_rust);
-        // 需要执行下面的命令
-        let work_space_clone =  format!("{}/{}", self.work_space, self.rust_root);
+    fn cargo_build(&mut self, action: String) {
+        let cargo_path = format!("{}/bin/cargo.exe", self.path_rust);
+        let work_space_clone = format!("{}/{}", self.work_space, self.rust_root);
 
-        let (tx, rx) = mpsc::channel();
-        self.receiver = Some(rx); // 将接收端交给主线程轮询
-        std::thread::spawn(move || {
-            // 1. 发送开始信号
-            let _ = tx.send("任务开始...".to_string());
+        let (tx, rx) = std::sync::mpsc::channel();
+        self.receiver = Some(rx);
 
-            // Windows 隐藏窗口标志位
+        thread::spawn(move || {
+            let _ = tx.send(BuildEvent::Status(format!("正在编译..rust...")));
+            
+
+            #[cfg(windows)]
             const CREATE_NO_WINDOW: u32 = 0x08000000;
 
-            // 2. 执行耗时操作
-            let mut binding = std::process::Command::new(cargo_path);
-            let cmd = binding.arg("build")
-                .current_dir(work_space_clone);
+            // 1. 配置命令，将输出重定向到管道
+            let mut command = Command::new(cargo_path);
+            command.arg("build")
+                .current_dir(work_space_clone)
+                .stdout(Stdio::piped()) // 捕获标准输出
+                .stderr(Stdio::piped()); // 捕获错误输出（Cargo 编译进度通常在 stderr）
 
-            // 仅在 Windows 下配置隐藏窗口
             #[cfg(windows)]
             {
-                cmd.creation_flags(CREATE_NO_WINDOW);
+                use std::os::windows::process::CommandExt;
+                command.creation_flags(CREATE_NO_WINDOW);
             }
 
-            let output = cmd.output();
+            // 2. 启动进程
+            let mut child = match command.spawn() {
+                Ok(c) => c,
+                Err(e) => {
+                    let _ = tx.send(BuildEvent::Error(format!("无法启动进程"), format!("{}", e))); 
+                    return;
+                }
+            };
 
-            // 3. 发送结果
-            match output {
-               Ok(out) => {
-                    if out.status.success() {
-                        let _ = tx.send(action);
+            // 3. 实时读取 stderr (Cargo 的主要输出在这里)
+            let stderr = child.stderr.take().unwrap();
+            let tx_stderr = tx.clone();
+            thread::spawn(move || {
+                let reader = BufReader::new(stderr);
+                for line in reader.lines() {
+                    if let Ok(l) = line {
+                        let _ = tx_stderr.send(BuildEvent::Log(format!("{}", l))); // 实时发送每一行
+                    }
+                }
+            });
+
+            // 4. 实时读取 stdout
+            let stdout = child.stdout.take().unwrap();
+            let tx_stdout = tx.clone();
+            thread::spawn(move || {
+                let reader = BufReader::new(stdout);
+                for line in reader.lines() {
+                    if let Ok(l) = line {
+                        let _ = tx_stdout.send(BuildEvent::Log(format!("{}", l))); // 实时发送每一行
+                    }
+                }
+            });
+
+            // 5. 等待进程结束
+            match child.wait() {
+                Ok(status) => {
+                    if status.success() {
+                        let _ = tx.send(BuildEvent::Complete(format!("{}", action)));
                     } else {
-                        // 关键修正 2: 捕获并发送真正的错误信息
-                        let error_msg = String::from_utf8_lossy(&out.stderr);
-                        let _ = tx.send(format!("CARGO_ERROR: {}", error_msg));
+                        let _ = tx.send(BuildEvent::Error(format!("编译失败，请检查上方日志"), format!("{}", ""))); 
                     }
                 }
                 Err(e) => {
-                    let _ = tx.send(format!("PROCESS_FAIL: {}", e));
+                    let _ = tx.send(BuildEvent::Error(format!("等待进程时出错"), format!("{}", e))); 
                 }
             }
         });
@@ -851,7 +926,7 @@ impl INode for NodeHello {
         self.receiver = Some(rx); // 将接收端交给主线程轮询
         std::thread::spawn(move || {
             // 1. 发送开始信号
-            let _ = tx.send("任务开始...".to_string());
+            let _ = tx.send(BuildEvent::Status(format!("正在启动.godot..")));
  
             // 2. 创建并配置命令
             let child = Command::new(path_godot) // 确保 godot 已加入环境变量，否则请使用绝对路径
@@ -863,10 +938,11 @@ impl INode for NodeHello {
             match child {
                 Ok(_child_process) => {
                     // 3. 进程启动成功，立即发送信号
-                    let _ = tx.send("GODOT_START_UP".to_string());
+                    let _ = tx.send(BuildEvent::Complete(format!("GODOT_START_UP")));
+                    let _ = tx.send(BuildEvent::Progress(100.0));
                 }
                 Err(e) => {
-                    let _ = tx.send(format!("PROCESS_FAIL: {}", e));
+                    let _ = tx.send(BuildEvent::Error(format!("PROCESS_FAIL"), format!("{}", e))); 
                 }
             }
         });
