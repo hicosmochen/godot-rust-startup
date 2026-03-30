@@ -59,6 +59,12 @@ impl IColorRect for MainMenu {
         let translated_text_godot_file = self.base().tr("godot_startup_file");
         menu_popup_config.add_item(translated_text_godot_file.to_godot());
         menu_popup_config.set_item_id(2, 1002);
+        menu_popup_config.add_separator();           // 分割线
+        // let translated_text_godot_file = self.base().tr("godot_startup_file");
+        menu_popup_config.add_item("设置语言");
+        menu_popup_config.set_item_id(4, 1003);
+
+
         let translated_text_version_information = self.base().tr("version_information");
         menu_popup_about.add_item(translated_text_version_information.to_godot());
         menu_popup_about.set_item_id(0, 3001);
@@ -158,6 +164,12 @@ impl MainMenu {
                 // 启动文件类型的对话框
                 let translated_text_select_godot_launcher = self.base().tr("select_godot_launcher");
                 self.open_file_dialog(translated_text_select_godot_launcher.to_string())
+            },
+            1003 => {
+                godot_print!("点击了：设置语言");
+                // 启动文件类型的对话框
+                let scene_path = String::from("res://scene/dialog_setting_language.tscn");
+                self.create_dialog_by_scene(scene_path);
             },
             3001 => {
                 godot_print!("点击了：rust版本信息");
@@ -338,6 +350,20 @@ impl MainMenu {
         if let Some(new_scene) = pack_scene.instantiate(){
             // 3. 将新节点添加为当前节点的子节点
             self.base_mut().add_child(&new_scene)
+        }
+    }
+
+    // 通过场景路径创建对话框
+    #[func]
+    pub fn create_dialog_by_scene(&mut self, scene_path: String){
+        let scene = load::<PackedScene>(&scene_path);
+        // 1. 实例化为 Node
+        let my_node = scene.instantiate_as::<Node>();
+
+        // 2. 获取场景树根节点 (Main Loop 的根 Window)
+        if let Some(mut root) = self.base().get_tree().and_then(|t| t.get_root()) {
+            // 3. 将 Node 挂载到根部
+            root.add_child(&my_node);
         }
     }
 
