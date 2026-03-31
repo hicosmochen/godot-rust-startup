@@ -7,7 +7,7 @@ corner_radius_top_right = 20
 corner_radius_bottom_right = 20
 corner_radius_bottom_left = 20
 
-[node name="DialogSettingLanguage" type="ProjectDialog" unique_id=656827369]
+[node name="DialogSettingLanguage" type="LanguageDialog" unique_id=1707122440]
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=198844626]
 offset_right = 1280.0
@@ -33,7 +33,7 @@ text = "设置语言"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Button_language_01" type="Button" parent="ColorRect/Panel" unique_id=510838553]
+[node name="Button_language_01" type="LanguageButton" parent="ColorRect/Panel" unique_id=2101021068]
 layout_mode = 0
 offset_left = 50.0
 offset_top = 120.0
@@ -42,7 +42,8 @@ offset_bottom = 170.0
 text = "英语"
 metadata/_edit_lock_ = true
 
-[node name="Button_language_02" type="Button" parent="ColorRect/Panel" unique_id=1423156211]
+[node name="Button_language_02" type="LanguageButton" parent="ColorRect/Panel" unique_id=1707679326]
+kind = 1
 layout_mode = 0
 offset_left = 270.0
 offset_top = 120.0
@@ -51,7 +52,8 @@ offset_bottom = 170.0
 text = "简体中文"
 metadata/_edit_lock_ = true
 
-[node name="Button_language_03" type="Button" parent="ColorRect/Panel" unique_id=2095641228]
+[node name="Button_language_03" type="LanguageButton" parent="ColorRect/Panel" unique_id=557164770]
+kind = 2
 layout_mode = 0
 offset_left = 490.0
 offset_top = 120.0
@@ -60,7 +62,8 @@ offset_bottom = 170.0
 text = "繁体中文"
 metadata/_edit_lock_ = true
 
-[node name="Button_language_04" type="Button" parent="ColorRect/Panel" unique_id=909608534]
+[node name="Button_language_04" type="LanguageButton" parent="ColorRect/Panel" unique_id=902144180]
+kind = 3
 layout_mode = 0
 offset_left = 50.0
 offset_top = 240.0
@@ -69,7 +72,8 @@ offset_bottom = 290.0
 text = "日语"
 metadata/_edit_lock_ = true
 
-[node name="Button_language_05" type="Button" parent="ColorRect/Panel" unique_id=605204183]
+[node name="Button_language_05" type="LanguageButton" parent="ColorRect/Panel" unique_id=463598700]
+kind = 4
 layout_mode = 0
 offset_left = 270.0
 offset_top = 240.0
@@ -78,7 +82,8 @@ offset_bottom = 290.0
 text = "韩语"
 metadata/_edit_lock_ = true
 
-[node name="Button_language_06" type="Button" parent="ColorRect/Panel" unique_id=13028761]
+[node name="Button_language_06" type="LanguageButton" parent="ColorRect/Panel" unique_id=1620834426]
+kind = 5
 layout_mode = 0
 offset_left = 490.0
 offset_top = 240.0
@@ -87,7 +92,8 @@ offset_bottom = 290.0
 text = "德语"
 metadata/_edit_lock_ = true
 
-[node name="Button_language_07" type="Button" parent="ColorRect/Panel" unique_id=1312512936]
+[node name="Button_language_07" type="LanguageButton" parent="ColorRect/Panel" unique_id=112283596]
+kind = 6
 layout_mode = 0
 offset_left = 50.0
 offset_top = 360.0
@@ -96,7 +102,8 @@ offset_bottom = 410.0
 text = "法语"
 metadata/_edit_lock_ = true
 
-[node name="Button_language_08" type="Button" parent="ColorRect/Panel" unique_id=1470508026]
+[node name="Button_language_08" type="LanguageButton" parent="ColorRect/Panel" unique_id=2112644789]
+kind = 7
 layout_mode = 0
 offset_left = 270.0
 offset_top = 360.0
@@ -105,7 +112,8 @@ offset_bottom = 410.0
 text = "西班牙语"
 metadata/_edit_lock_ = true
 
-[node name="Button_language_09" type="Button" parent="ColorRect/Panel" unique_id=941729069]
+[node name="Button_language_09" type="LanguageButton" parent="ColorRect/Panel" unique_id=269441536]
+kind = 8
 layout_mode = 0
 offset_left = 490.0
 offset_top = 360.0

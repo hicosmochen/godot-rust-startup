@@ -35,7 +35,6 @@ impl SecureStorage {
         let mut file = FileAccess::open(file_path, ModeFlags::WRITE)
             .ok_or("Cannot open file for writing")?;
         file.store_buffer(&PackedByteArray::from_iter(final_data));
-        
         Ok(())
     }
 
@@ -77,6 +76,7 @@ impl SecureStorage {
             "path_rust" => my_data.path_rust = value.to_string(),
             "first_launch_ms" => my_data.first_launch_ms = value.parse().unwrap_or(0),
             "password_hash" => my_data.password_hash = value.to_string(),
+            "current_lanague" => my_data.current_lanague = value.to_string(),
             _ => godot_print!("Unknown key: {}", key),
         }
 
@@ -94,6 +94,7 @@ impl SecureStorage {
             "path_rust" => loaded_data.path_rust,
             "first_launch_ms" => loaded_data.first_launch_ms.to_string(),
             "password_hash" => loaded_data.password_hash,
+            "current_lanague" => loaded_data.current_lanague,
             _ => "Not Found".to_string(),
         }
     }

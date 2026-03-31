@@ -7,6 +7,7 @@ pub struct SecureData {
     pub path_rust: String,
     pub first_launch_ms: u64,
     pub password_hash: String,
+    pub current_lanague: String,
 }
 
 
@@ -18,6 +19,7 @@ impl Default for SecureData {
             path_rust: "user://config/rust".to_string(),
             first_launch_ms: 1711234567890,
             password_hash: "default_secret".to_string(),
+            current_lanague: "en_US".to_string(),
         }
     }
 }

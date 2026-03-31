@@ -9,3 +9,4 @@ mod menu;
 mod about;
 mod secure;
 mod project;
+mod language;
