@@ -6,6 +6,17 @@
 
 
 
-英文文档地址：
+<br><br>
+<br>
+<br>
 
-<a href="https://github.com/hicosmochen/godot-rust-startup/blob/f70d6c98efa2bc671916c93ace7d4a7a5aac657c/README_zhCN.md" target="_blank"> 点我查看英文文档 </a>
+
+
+English document address：
+
+<a href="https://github.com/hicosmochen/godot-rust-startup/blob/f70d6c98efa2bc671916c93ace7d4a7a5aac657c/README_zhCN.md" target="_blank"> Click here to view the English document </a>
+
+
+<br><br>
+<br>
+<br>
