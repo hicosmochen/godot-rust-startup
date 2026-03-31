@@ -26,9 +26,6 @@ impl IRichTextLabel for AboutInstructionText {
         self.base_mut().add_to_group("listener_change_language");
         self.text = GString::from(&SecureStorage::get("current_lanague"));
 
-
-        godot_print!("显示内容 ....ready.text {0}", self.text);
-
         let content = self.get_content(self.text.clone());
         let mut node = self.base_mut();
         let message = format!("{}", content);

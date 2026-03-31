@@ -6,6 +6,8 @@ use godot::classes::os::SystemDir;
 use crate::menu::my_file_dialog::MyFileDialog;
 use crate::secure::secure_storage::SecureStorage;
 
+use godot::classes::TranslationServer;
+
 #[derive(GodotClass)]
 #[class(base=ColorRect)] 
 pub struct MainMenu {
@@ -35,6 +37,8 @@ impl IColorRect for MainMenu {
     fn ready(&mut self) {
         // 将当前节点, 添加到组当中
         self.base_mut().add_to_group("listener_change_language");
+        // 读取配置信息
+        self.on_read_config();
         // 初次创建
         self.on_ready();
     }
@@ -44,6 +48,12 @@ impl IColorRect for MainMenu {
 // #[func] 必须放在单独的 impl 块中
 #[godot_api]
 impl MainMenu {
+
+    #[func]
+    fn on_read_config(&mut self){
+        let lang_code: String = SecureStorage::get("current_lanague");
+        TranslationServer::singleton().set_locale(&lang_code);
+    }
 
     #[func]
     fn on_ready(&mut self){
