@@ -1,19 +1,19 @@
 ﻿KEYS,en_US,zh_CN,zh_TW,ja_JP,ko_KR,de_DE,fr_FR,es_ES,it_IT
 language_desc,英语,简体中文,繁体中文,日语,韩语,德语,法语,西班牙语,意大利语
-environment_configuration,Environment configuration,环境配置,環境配置,環境設定,환경 구성,Umgebungskonfiguration,Configuration de l'environnement,Configuración del entorno,Configurazione ambiente
-project_creation,Project creation,项目创建,專案創建,プロジェクト作成,프로젝트 생성,Projekterstellung,Création de projet,Creación de proyectos,Creazione del progetto
-about_software,About the software,关于软件,關於軟體,ソフトウェアについて,소프트웨어에 대하여,Über die Software,À propos du logiciel,Acerca del software,Informazioni sul software
-exit_software,Exit the software,退出软件,退出軟體,ソフトウェアを終了してください。,소프트웨어를 종료하세요,Beenden Sie die Software,Quitter le logiciel,Salir del software,Esci dal software
+environment_configuration,configuration,配置,配置,構成,구성,Konfiguration,Configuration,Configuración,Configurazione
+project_creation,project,项目,專案,プロジェクト,프로젝트,Projekt,projet,proyecto,progetto
+about_software,about,关于,關於,について,~에 대한,um,à propos,acerca de,Di
+exit_software,quit,退出,退出,やめる,그만두다,aufhören,quitter,abandonar,esentato
 diy_template_tool,DIY RUST-GODOT template tool,自制RUST-GODOT模板工具,自製RUST-GODOT模板工具,DIY RUST-GODOTテンプレートツール,DIY 러스트-고닷 템플릿 도구,DIY RUST-GODOT Schablonenwerkzeug,Outil de gabarit DIY RUST-GODOT,Herramienta de plantilla DIY RUST-GODOT,Strumento fai-da-te per la creazione di modelli RUST-GODOT
-rust_installation_path,Rust installation path,rust安装路径,rust安裝路徑,Rustのインストールパス,Rust 설치 경로,Rust-Installationspfad,Chemin d'installation de Rust,Ruta de instalación de Rust,percorso di installazione di Rust
-godot_startup_file,Godot startup file,Godot启动文件,Godot啟動文件,Godotの起動ファイル,Godot 시작 파일,Godot-Startdatei,fichier de démarrage Godot,archivo de inicio de Godot,Risoluzione di avvio di Godot
+rust_installation_path,Rust path,rust路径,rust路徑,Rustのパス,러스트 경로,Rust-Pfad,Chemin Rust,Ruta oxidada,Percorso della ruggine
+godot_startup_file,Godot file,Godot文件,Godot文件,Godotファイル,고도 파일,Godot-Datei,Fichier Godot,Archivo Godot,Risoluzione Godot
 select_cargo_path,Select the .cargo path for Rust.,选择rust的.cargo路径,選擇rust的.cargo路徑,Rust の .cargo パスを選択してください。,Rust용 .cargo 경로를 선택하세요.,Wählen Sie den .cargo-Pfad für Rust aus.,Sélectionnez le chemin .cargo pour Rust.,Seleccione la ruta .cargo para Rust.,Seleziona il percorso .cargo per Rust.
 select_godot_launcher,Select the godot launcher file (exe).,选择godot的启动文件exe,選擇godot的啟動檔exe,Godotランチャーファイル（exeファイル）を選択してください。,Godot 실행 파일(exe)을 선택하세요.,Wählen Sie die Godot-Launcherdatei (exe) aus.,Sélectionnez le fichier lanceur Godot (exe).,Seleccione el archivo de inicio de Godot (exe).,Seleziona il file di avvio di Godot (exe).
 select_workspace,Select workspace,选择工作空间,選擇工作空間,ワークスペースを選択,작업 공간을 선택하세요,Arbeitsbereich auswählen,Sélectionner l'espace de travail,Seleccionar espacio de trabajo,Seleziona l'area di lavoro
 rust_root_directory,Rust root directory,rust根目录,rust根目錄,Rustのルートディレクトリ,Rust 루트 디렉토리,Rust-Stammverzeichnis,Répertoire racine Rust,Directorio raíz de Rust,directory radice di Rust
 gdext_name,gdext name,gdext名称,gdext名稱,gdext名,gdext 이름,gdext name,nom gdext,nombre gdext,nome gdext
 case_needs_to_be_created,Case needs to be created,需要创建案例,需要創建案例,ケースを作成する必要があります,사건을 생성해야 합니다.,Es muss ein Fall erstellt werden,Il faut créer un dossier.,Es necesario crear un caso.,È necessario creare un caso
-start_creating_project,Start creating a project,开始创建项目,開始創建專案,プロジェクトの作成を開始する,프로젝트 생성을 시작하세요,Beginnen Sie mit der Erstellung eines Projekts,Commencez à créer un projet,Comienza a crear un proyecto,Inizia a creare un progetto
+start_creating_project,Create a project,创建项目,創建專案,プロジェクトを作成する,프로젝트를 생성하세요,Ein Projekt erstellen,Créer un projet,Crear un proyecto,Crea un progetto
 we_need_to_create_study_project,Do we need to create a case study project?,是否需要创建案例项目,是否需要建立案例項目,ケーススタディプロジェクトを作成する必要はありますか？,사례 연구 프로젝트를 만들어야 할까요?,Müssen wir ein Fallstudienprojekt erstellen?,Faut-il créer un projet d'étude de cas ?,¿Necesitamos crear un proyecto de estudio de caso?,Dobbiamo creare un progetto di studio di caso?
 cancel,cancel,取消,取消,キャンセル,취소,Stornieren,Annuler,Cancelar,Cancellare
 confirm,confirm,确认,確認,確認する,확인하다,bestätigen,confirmer,confirmar,confermare

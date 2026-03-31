@@ -17,18 +17,18 @@ metadata/_edit_lock_ = true
 
 [node name="Panel" type="Panel" parent="ColorRect" unique_id=1949708658]
 layout_mode = 0
-offset_left = 400.0
+offset_left = 320.0
 offset_top = 240.0
-offset_right = 880.0
+offset_right = 960.0
 offset_bottom = 560.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_yha12")
 
 [node name="Label" type="Label" parent="ColorRect/Panel" unique_id=320178379]
 layout_mode = 0
 offset_top = 30.0
-offset_right = 480.0
+offset_right = 640.0
 offset_bottom = 80.0
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 22
 text = "we_need_to_create_study_project"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -36,17 +36,17 @@ vertical_alignment = 1
 [node name="Button_cancel" type="ProjectButton" parent="ColorRect/Panel" unique_id=97427502]
 kind = 5
 layout_mode = 0
-offset_left = 50.0
+offset_left = 80.0
 offset_top = 220.0
-offset_right = 230.0
+offset_right = 260.0
 offset_bottom = 270.0
 text = "cancel"
 
 [node name="Button_confirm" type="ProjectButton" parent="ColorRect/Panel" unique_id=1668973731]
 kind = 8
 layout_mode = 0
-offset_left = 250.0
+offset_left = 380.0
 offset_top = 220.0
-offset_right = 430.0
+offset_right = 560.0
 offset_bottom = 270.0
 text = "confirm"
