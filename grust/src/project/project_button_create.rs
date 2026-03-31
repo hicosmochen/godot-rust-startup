@@ -133,8 +133,10 @@ impl IButton for ProjectButtonCreate {
                         },
                         "GODOT_START_UP" => {
                             self.base_mut().set_disabled(false);
-                            self.send_message_to_rich(format!("godot project start up done"), 0);
-                            self.send_message_to_rich(format!("all operations have been completed."), 2);
+                            let translated_text_godot_project_start_up_done = self.base_mut().tr("godot_project_start_up_done");
+                            self.send_message_to_rich(format!("{}", translated_text_godot_project_start_up_done.to_string()), 0);
+                            let translated_text_all_operations_have_been_completed = self.base_mut().tr("all_operations_have_been_completed");
+                            self.send_message_to_rich(format!("{}", translated_text_all_operations_have_been_completed.to_string()), 2);
                             self.send_message_to_rich(format!("------------------------------------------------------"), 0);
                         },
                         _ => godot_print!("未知动作完成: {}", action),
@@ -249,23 +251,28 @@ impl ProjectButtonCreate {
             .to::<bool>();
 
         if self.path_godot.is_empty(){
-            self.send_message_to_rich(format!("Godot 的路径不能为空"), 0);
+            let translated_text_godot_cannot_be_empty = self.base_mut().tr("godot_cannot_be_empty");
+            self.send_message_to_rich(format!("{}", translated_text_godot_cannot_be_empty.to_string()), 0);
             return false;
         }
         
         if self.path_rust.is_empty(){
-            self.send_message_to_rich(format!("Rust 的路径不能为空"), 0);
+            let translated_text_rust_paths_cannot_be_empty = self.base_mut().tr("rust_paths_cannot_be_empty");
+            self.send_message_to_rich(format!("{}", translated_text_rust_paths_cannot_be_empty.to_string()), 0);
             return false;
         }
         
         if self.work_space.is_empty(){
-            self.send_message_to_rich(format!("工作空间 的路径不能为空"), 0);
-             return false;
+            let translated_text_workspace_cannot_be_empty = self.base_mut().tr("workspace_cannot_be_empty");
+            self.send_message_to_rich(format!("{}", translated_text_workspace_cannot_be_empty.to_string()), 0);
+            return false;
         }
         
         if self.gdext_name.is_empty(){
-            self.send_message_to_rich(format!("gdext的名称不能为空"), 0);
-             return false;
+            // gdext_cannot_be_empty
+            let translated_text_gdext_cannot_be_empty = self.base_mut().tr("gdext_cannot_be_empty");
+            self.send_message_to_rich(format!("{}", translated_text_gdext_cannot_be_empty.to_string()), 0);
+            return false;
         }
         // 更新进度值
         self.update_progress_value(5.0);
@@ -407,14 +414,16 @@ impl ProjectButtonCreate {
         match execute_modify() {
             Ok(_) => {
                 godot_print!("modify cargo toml create done");
-                self.send_message_to_rich(format!("modify cargo toml create done"), 0);
+                let translated_text_modify_cargo_toml_create_done = self.base_mut().tr("modify_cargo_toml_create_done");
+                self.send_message_to_rich(format!("{}", translated_text_modify_cargo_toml_create_done), 0);
                 // 更新进度值
                 self.update_progress_value(25.0);
                 self.modify_lib_rs();
             }
             Err(_e) => {
                 godot_print!("modify cargo toml create fail");
-                self.send_message_to_rich(format!("modify cargo toml create fail"), 1);
+                let translated_text_modify_cargo_toml_create_fail = self.base_mut().tr("modify_cargo_toml_create_fail");
+                self.send_message_to_rich(format!("{}", translated_text_modify_cargo_toml_create_fail), 1);
             }
         }
     }
@@ -444,12 +453,14 @@ unsafe impl ExtensionLibrary for MyExtension {
                 // 更新进度值
                 self.update_progress_value(30.0);
                 godot_print!("modify lib rs done");
-                self.send_message_to_rich(format!("modify lib rs done"), 0);
+                let translated_text_modify_lib_rs_done = self.base_mut().tr("modify_lib_rs_done");
+                self.send_message_to_rich(format!("{}", translated_text_modify_lib_rs_done), 0);
                 self.cargo_build("CARGO_BUILD_INIT".to_string());
             }
             Err(_e) => {
                 godot_print!("modify lib rs fail");
-                self.send_message_to_rich(format!("modify lib rs fail"), 1);
+                let translated_text_modify_lib_rs_fail = self.base_mut().tr("modify_lib_rs_fail");
+                self.send_message_to_rich(format!("{}", translated_text_modify_lib_rs_fail), 1);
             }
         }
     }
@@ -552,7 +563,8 @@ unsafe impl ExtensionLibrary for MyExtension {
                 godot_print!("创建文件夹失败: {}", e);
                 return;
             }
-            self.send_message_to_rich(format!("dir godot create success"), 0);
+            let translated_text_dir_godot_create_success = self.base_mut().tr("dir_godot_create_success");
+            self.send_message_to_rich(format!("{}", translated_text_dir_godot_create_success), 0);
             godot_print!("dir godot create success");
         }
 
@@ -569,12 +581,15 @@ unsafe impl ExtensionLibrary for MyExtension {
                 // 更新进度值
                 self.update_progress_value(50.0);
                 godot_print!("project.godot create success");
-                self.send_message_to_rich(format!("project.godot create success"), 0);
+
+                let translated_text_project_godot_create_success = self.base_mut().tr("project_godot_create_success");
+                self.send_message_to_rich(format!("{}", translated_text_project_godot_create_success), 0);
                 self.create_file_gdextension();
             }
             Err(e) => {
                 godot_print!("project.godot create fail: {}", e);
-                self.send_message_to_rich(format!("project.godot create fail: {}", e), 0);
+                let translated_text_project_godot_create_fail = self.base_mut().tr("project_godot_create_fail");
+                self.send_message_to_rich(format!("{}", translated_text_project_godot_create_fail), 1);
             }
         }
     }
@@ -625,13 +640,16 @@ windows.debug.x86_64 = "res://../{}/target/debug/{}.dll""#,
                 // 更新进度值
                 self.update_progress_value(55.0);
                 godot_print!("create file gdextension create success");
-                self.send_message_to_rich(format!("create file gdextension create success"), 0);
+                let translated_text_create_file_gdextension_create_success = self.base_mut().tr("create_file_gdextension_create_success");
+                self.send_message_to_rich(format!("{}", translated_text_create_file_gdextension_create_success), 0);
                 // 准备修改配置文件
                 self.modify_godot_projects();
             }
             Err(_e) => {
                 godot_print!("create file gdextension create fail");
-                self.send_message_to_rich(format!("create file gdextension create fail"), 1);
+                // create_file_gdextension_create_fail
+                let translated_text_create_file_gdextension_create_fail = self.base_mut().tr("create_file_gdextension_create_fail");
+                self.send_message_to_rich(format!("{}", translated_text_create_file_gdextension_create_fail), 1);
             }
         }
     }
@@ -685,8 +703,11 @@ windows.debug.x86_64 = "res://../{}/target/debug/{}.dll""#,
                 // 更新进度值
                 self.update_progress_value(60.0);
                 godot_print!("modify godot projects done");
-                self.send_message_to_rich(format!("modify godot projects done"), 0);
-                self.send_message_to_rich(format!("is need create demo : {}", self.create_demo), 0);
+                let translated_text_modify_godot_projects_done = self.base_mut().tr("modify_godot_projects_done");
+                self.send_message_to_rich(format!("{}", translated_text_modify_godot_projects_done.to_string()), 0);
+
+                let translated_text_is_need_create_demo = self.base_mut().tr("is_need_create_demo");
+                self.send_message_to_rich(format!("{}:{}",translated_text_is_need_create_demo.to_string(),self.create_demo), 0);
 
                 // 这里判断是否需要创建 Demo 程序?
                 if self.create_demo {
@@ -704,7 +725,8 @@ windows.debug.x86_64 = "res://../{}/target/debug/{}.dll""#,
             }
             Err(_e) => {
                 godot_print!("modify godot projects fail");
-                self.send_message_to_rich(format!("modify godot projects fail"), 1);
+                let translated_text_modify_godot_projects_fail = self.base_mut().tr("modify_godot_projects_fail");
+                self.send_message_to_rich(format!("{}", translated_text_modify_godot_projects_fail.to_string()), 1);
             }
         }
     }
@@ -764,12 +786,15 @@ windows.debug.x86_64 = "res://../{}/target/debug/{}.dll""#,
                 // 更新进度值
                 self.update_progress_value(65.0);
                 godot_print!("lib.rs append module success");
-                self.send_message_to_rich(format!("lib.rs append module success"), 0);
+                // lib_rs_append_module_success
+                let translated_text_lib_rs_append_module_success = self.base_mut().tr("lib_rs_append_module_success");
+                self.send_message_to_rich(format!("{}", translated_text_lib_rs_append_module_success.to_string()), 0);
                 self.create_file_node_hello();
             },
             Err(e) => {
                 godot_print!("lib.rs append module fail: {}", e);
-                self.send_message_to_rich(format!("lib.rs append module fail"), 1);
+                let translated_text_lib_rs_append_module_fail = self.base_mut().tr("lib_rs_append_module_fail");
+                self.send_message_to_rich(format!("{}:{}", translated_text_lib_rs_append_module_fail.to_string(), e), 1);
             },
         }
     }
@@ -825,12 +850,16 @@ impl INode for NodeHello {
                 // 更新进度值
                 self.update_progress_value(70.0);
                 godot_print!("create file node hello done");
-                self.send_message_to_rich(format!("create file node hello done"), 0);
+
+                // create_file_node_hello_done
+                let translated_text_create_file_node_hello_done = self.base_mut().tr("create_file_node_hello_done");
+                self.send_message_to_rich(format!("{}", translated_text_create_file_node_hello_done.to_string()), 0);
                 self.cargo_build("CARGO_BUILD_PROJECT".to_string());
             }
             Err(_e) => {
                 godot_print!("create file node hello fail");
-                self.send_message_to_rich(format!("create file node hello fail"), 1);
+                let translated_text_create_file_node_hello_fail = self.base_mut().tr("create_file_node_hello_fail");
+                self.send_message_to_rich(format!("{}", translated_text_create_file_node_hello_fail.to_string()), 1);
             }
         }
     }
@@ -871,12 +900,14 @@ impl INode for NodeHello {
                 // 更新进度值
                 self.update_progress_value(80.0);
                 godot_print!("create main scene done");
-                self.send_message_to_rich(format!("create main scene done"), 0);
+                let translated_text_create_main_scene_done = self.base_mut().tr("create_main_scene_done");
+                self.send_message_to_rich(format!("{}", translated_text_create_main_scene_done.to_string()), 0);
                 self.set_as_main_scene();
             }
             Err(_e) => {
-                godot_print!("create main scene 创建失败了");
-                self.send_message_to_rich(format!("create main scene fail"), 1);
+                godot_print!("create main scene fail");
+                let translated_text_create_main_scene_fail = self.base_mut().tr("create_main_scene_fail");
+                self.send_message_to_rich(format!("{}", translated_text_create_main_scene_fail.to_string()), 1);
             }
         }
     }
@@ -917,13 +948,16 @@ impl INode for NodeHello {
                 // 更新进度值
                 self.update_progress_value(90.0);
                 godot_print!("set as main scene success");
-                self.send_message_to_rich(format!("set as main scene success"), 0);
+                // set_as_main_scene_success
+                let translated_text_set_as_main_scene_success = self.base_mut().tr("set_as_main_scene_success");
+                self.send_message_to_rich(format!("{}", translated_text_set_as_main_scene_success.to_string()), 0);
                 self.start_up_godot();
             }
             Err(e) => {
                 // 打印具体错误 e 方便你调试（比如文件没找到或拒绝访问）
-                godot_print!("set as main scene 失败: {:?}", e);
-                self.send_message_to_rich(format!("set as main scene fail: {}", e), 1);
+                godot_print!("set as main scene fail: {:?}", e);
+                let translated_text_set_as_main_scene_fail = self.base_mut().tr("set_as_main_scene_fail");
+                self.send_message_to_rich(format!("{}:{}", translated_text_set_as_main_scene_fail.to_string(), e), 1);
             }
         }
     }
