@@ -117,10 +117,6 @@ impl LanguageButton {
         server.set_locale(&language_code);
         // 存储当前设置的语言
         SecureStorage::save("current_lanague", &language_code);
-        // 打印日志, 确定设置成功
-        godot_print!("语言已经切换至1: {}" , server.get_locale());
-        godot_print!("语言已经切换至x: {}" , SecureStorage::get("current_lanague"));
-
         // 发送信号
         self.base().get_tree().unwrap().call_group("listener_change_language", "on_change_language",  &[language_code.to_variant()]);
     }
