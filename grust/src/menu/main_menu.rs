@@ -81,7 +81,8 @@ impl MainMenu {
             menu_popup_config.add_item(translated_text_godot_file.to_godot());
             menu_popup_config.set_item_id(2, 1002);
             menu_popup_config.add_separator();           // 分割线
-            menu_popup_config.add_item("设置语言");
+            let translated_text_set_language = self.base().tr("set_language");
+            menu_popup_config.add_item(translated_text_set_language.to_godot());
             menu_popup_config.set_item_id(4, 1003);
         }
 
