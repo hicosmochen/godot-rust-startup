@@ -95,7 +95,8 @@ L'ensemble du processus ne prend que 2 minutes.
 ### Section 1 : Interface principale
 
 
-<img width="1326" height="872" alt="image-20260331181015689" src="https://github.com/user-attachments/assets/285f37f1-ebd1-4a7a-b825-6642dec4f364" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/5f85a5d9-392a-4b83-b374-13957f202412" />
+
 
 
 L'interface principale, en haut, contient principalement plusieurs menus d'options où vous pouvez faire des choix.
@@ -110,7 +111,8 @@ L'interface principale, en haut, contient principalement plusieurs menus d'optio
 
 ### Section 02 Sélection de la configuration
 
-<img width="1310" height="862" alt="image-20260331181135850" src="https://github.com/user-attachments/assets/2b2c807f-eb2b-42b8-8114-22274c437dca" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/f3174b2b-02e1-4758-8815-9d8b7ea81177" />
+
 
 
 
@@ -124,7 +126,8 @@ Où :
 
 Vous pouvez également choisir la langue. Cliquez sur l'option correspondante ci-dessous.
 
-<img width="1309" height="864" alt="image-20260331181355306" src="https://github.com/user-attachments/assets/95f006af-56d7-420d-8812-8ec167019b71" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/fa97e091-6571-4a4e-8a23-5cafda870a7a" />
+
 
 
 
@@ -143,7 +146,8 @@ Vous pouvez également choisir la langue. Cliquez sur l'option correspondante ci
 Dans l'interface du projet, vous pouvez commencer à construire votre projet.
 
 
-<img width="1304" height="859" alt="image-20260331181508488" src="https://github.com/user-attachments/assets/e6860c28-5a09-4313-875b-04d5c18f432d" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/fac60915-6b4e-4918-8404-f07b8dcec25d" />
+
 
 
 
@@ -151,10 +155,12 @@ Suivez la séquence de boutons pour terminer la compilation du projet. Attendez 
 
 Le processus de compilation est illustré ci-dessous :
 
-<img width="1308" height="853" alt="image-20260331181707163" src="https://github.com/user-attachments/assets/043a58bb-3dd7-4930-bb1e-a7550e836b97" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/0daddaea-6e71-4318-9c3f-5a304bbf3553" />
 
 
-<img width="1301" height="859" alt="image-20260331181754200" src="https://github.com/user-attachments/assets/c8c37427-1b43-4702-92fc-4b13660ae7ab" />
+
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/88cb767a-a5da-46f1-bff6-92f8a2bbceae" />
+
 
 
 
@@ -178,13 +184,15 @@ Une fois toutes les opérations terminées, le système affichera « Toutes les 
 Si vous rencontrez des problèmes lors de l'utilisation du logiciel, vous pouvez vous référer à la documentation correspondante dans la section « À propos du logiciel ».
 
 
-<img width="1302" height="861" alt="image-20260331181959363" src="https://github.com/user-attachments/assets/5887aba2-e2e7-41e6-ae7b-44d47f156cec" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/5d80e27c-7b8c-42b5-bad8-e58a4d875273" />
+
 
 
 
 Instructions d'utilisation
 
-<img width="1303" height="861" alt="image-20260331182024547" src="https://github.com/user-attachments/assets/6488cf81-b53a-4bff-9000-8fab523b1a3a" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/89ebccd2-d83c-4346-9ce2-8dc439441b56" />
+
 
 
 
