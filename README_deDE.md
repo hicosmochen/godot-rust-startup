@@ -95,7 +95,8 @@ Der gesamte Vorgang dauert nur 2 Minuten.
 ### Abschnitt 01: Hauptbenutzeroberfläche
 
 
-<img width="1326" height="872" alt="image-20260331181015689" src="https://github.com/user-attachments/assets/285f37f1-ebd1-4a7a-b825-6642dec4f364" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/08a6505f-b13e-4c01-b0a5-48d9aa353e3e" />
+
 
 
 Die Hauptschnittstelle oben enthält hauptsächlich mehrere Optionsmenüs, in denen Sie Auswahlen treffen können.
@@ -110,7 +111,8 @@ Die Hauptschnittstelle oben enthält hauptsächlich mehrere Optionsmenüs, in de
 
 ### Abschnitt 02 Konfigurationsauswahl
 
-<img width="1310" height="862" alt="image-20260331181135850" src="https://github.com/user-attachments/assets/2b2c807f-eb2b-42b8-8114-22274c437dca" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/bedb4d57-63f6-49e3-985c-9d4c787e11e8" />
+
 
 Sie können den Pfad zu Rust und den Pfad zur Godot-Datei auswählen.
 
@@ -122,7 +124,8 @@ Bedeutung:
 
 Selbstverständlich können Sie auch die Sprache festlegen. Klicken Sie dazu unten auf die entsprechende Option.
 
-<img width="1309" height="864" alt="image-20260331181355306" src="https://github.com/user-attachments/assets/95f006af-56d7-420d-8812-8ec167019b71" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/f2d8dc85-85b1-419d-a579-cc636d211280" />
+
 
 
 
@@ -141,7 +144,8 @@ Selbstverständlich können Sie auch die Sprache festlegen. Klicken Sie dazu unt
 In der Projektoberfläche können Sie mit der Erstellung Ihres Projekts beginnen.
 
 
-<img width="1304" height="859" alt="image-20260331181508488" src="https://github.com/user-attachments/assets/e6860c28-5a09-4313-875b-04d5c18f432d" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/994d3d1f-ed55-4ced-8027-ed57bac052e3" />
+
 
 
 
@@ -153,10 +157,11 @@ Folgen Sie der Tastenfolge, um den Projekt-Build abzuschließen. Warten Sie, bis
 
 Der Aufbauprozess wird im Folgenden dargestellt:
 
-<img width="1308" height="853" alt="image-20260331181707163" src="https://github.com/user-attachments/assets/043a58bb-3dd7-4930-bb1e-a7550e836b97" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/7db00dd5-69a2-402d-bb34-29f35e2db513" />
 
 
-<img width="1301" height="859" alt="image-20260331181754200" src="https://github.com/user-attachments/assets/c8c37427-1b43-4702-92fc-4b13660ae7ab" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/7736c4f2-5dd9-4146-99e8-3d4d5072d4bc" />
+
 
 
 
@@ -180,13 +185,15 @@ Wenn alle Operationen abgeschlossen sind, zeigt das System die Meldung „Alle O
 Sollten Sie während der Nutzung dieser Software auf detaillierte Probleme stoßen, können Sie die entsprechende Dokumentation im Abschnitt „Über die Software“ konsultieren.
 
 
-<img width="1302" height="861" alt="image-20260331181959363" src="https://github.com/user-attachments/assets/5887aba2-e2e7-41e6-ae7b-44d47f156cec" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/9d5eec9b-9ff2-46c5-acda-785f45f8d335" />
+
 
 
 
 Gebrauchsanweisung
 
-<img width="1303" height="861" alt="image-20260331182024547" src="https://github.com/user-attachments/assets/6488cf81-b53a-4bff-9000-8fab523b1a3a" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/6197b81e-52e0-4d92-bc57-14397247f78f" />
+
 
 
 
