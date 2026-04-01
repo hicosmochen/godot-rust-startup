@@ -94,7 +94,8 @@ L'intero processo richiede solo 2 minuti.
 
 ### Sezione 01 Interfaccia principale
 
-<img width="1326" height="872" alt="image-20260331181015689" src="https://github.com/user-attachments/assets/285f37f1-ebd1-4a7a-b825-6642dec4f364" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/b9ba9013-4042-493d-8733-032ac9078eea" />
+
 
 L'interfaccia principale, nella parte superiore, contiene principalmente diversi menu di opzioni dove è possibile effettuare delle scelte.
 
@@ -106,7 +107,8 @@ L'interfaccia principale, nella parte superiore, contiene principalmente diversi
 
 ### Sezione 02 Selezione della configurazione
 
-<img width="1310" height="862" alt="image-20260331181135850" src="https://github.com/user-attachments/assets/2b2c807f-eb2b-42b8-8114-22274c437dca" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/38fc4003-3faa-4874-927a-3bbf4126d7b6" />
+
 
 
 
@@ -120,7 +122,8 @@ Dove:
 
 Naturalmente, è anche possibile impostare la lingua. L'opzione per impostare la lingua del software si trova qui sotto.
 
-<img width="1309" height="864" alt="image-20260331181355306" src="https://github.com/user-attachments/assets/95f006af-56d7-420d-8812-8ec167019b71" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/fc22ab09-80ca-469b-8649-44e0a93a6149" />
+
 
 
 
@@ -140,7 +143,8 @@ Naturalmente, è anche possibile impostare la lingua. L'opzione per impostare la
 Nell'interfaccia del progetto, è possibile iniziare a costruire il progetto.
 
 
-<img width="1304" height="859" alt="image-20260331181508488" src="https://github.com/user-attachments/assets/e6860c28-5a09-4313-875b-04d5c18f432d" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/e581d0cb-be1f-48db-9797-56c798cb9f63" />
+
 
 Segui la sequenza di pulsanti per completare la compilazione del progetto. Attendi che la barra di avanzamento raggiunga il 100% per completare l'intera compilazione del progetto.
 
@@ -150,10 +154,12 @@ Segui la sequenza di pulsanti per completare la compilazione del progetto. Atten
 
 Il processo di compilazione è illustrato di seguito:
 
-<img width="1308" height="853" alt="image-20260331181707163" src="https://github.com/user-attachments/assets/043a58bb-3dd7-4930-bb1e-a7550e836b97" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/2a0a6cce-6a5e-4e83-9640-f670984a024d" />
 
 
-<img width="1301" height="859" alt="image-20260331181754200" src="https://github.com/user-attachments/assets/c8c37427-1b43-4702-92fc-4b13660ae7ab" />
+
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/70885e0d-26a2-469a-8c5e-255fdd20024e" />
+
 
 
 
@@ -177,13 +183,15 @@ Al termine di tutte le operazioni, il sistema visualizzerà il messaggio "Tutte 
 In caso di problemi durante l'utilizzo del software, è possibile consultare la documentazione pertinente nella sezione "Informazioni sul software".
 
 
-<img width="1302" height="861" alt="image-20260331181959363" src="https://github.com/user-attachments/assets/5887aba2-e2e7-41e6-ae7b-44d47f156cec" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/54cd828e-551d-46d4-a4b5-2e7eaad12c4a" />
+
 
 
 
 Istruzioni per l'uso
 
-<img width="1303" height="861" alt="image-20260331182024547" src="https://github.com/user-attachments/assets/6488cf81-b53a-4bff-9000-8fab523b1a3a" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/89fd44a6-aeb7-4cf1-88a7-f570b4d5249c" />
+
 
 
 
