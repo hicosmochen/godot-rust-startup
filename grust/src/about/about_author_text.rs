@@ -56,6 +56,6 @@ impl AboutAuthorText {
 
     #[func]
     fn get_email(&self, _text: GString) -> String {
-        "chcsvip@126.com".to_string()
+        "hicosmochen@gmail.com".to_string()
     }
 }

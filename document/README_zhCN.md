@@ -201,6 +201,18 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 ## 第三章 项目显示
 
 ### 第01节 项目文件
@@ -209,13 +221,45 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
 ### 第02节 godot 文件
 
 <img width="1562" height="965" alt="image" src="https://github.com/user-attachments/assets/cec9c576-7a7e-47e5-9fdb-3c3c608631f6" />
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 ### 第03节 godot 运行结果
 
 <img width="1853" height="1001" alt="image" src="https://github.com/user-attachments/assets/55fa0ff3-31c1-4d2b-8bec-0cc4522aad73" />
+
+
+
+
+
+
+
+
+
 
 
