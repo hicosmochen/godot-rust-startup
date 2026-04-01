@@ -97,7 +97,8 @@
 ### 第01節 主介面
 
 
-<img width="1326" height="872" alt="image-20260331181015689" src="https://github.com/user-attachments/assets/285f37f1-ebd1-4a7a-b825-6642dec4f364" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/fda18f1d-cae5-4cc2-97d3-a0c5c5131320" />
+
 
 
 主介面, 頂部位置, 主要有一些選項選單,可以進行一些選擇.
@@ -112,7 +113,8 @@
 
 ### 第02節 配置選擇
 
-<img width="1310" height="862" alt="image-20260331181135850" src="https://github.com/user-attachments/assets/2b2c807f-eb2b-42b8-8114-22274c437dca" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/da38a176-c9bb-4aec-9fa8-ab102c43aa26" />
+
 
 
 
@@ -128,7 +130,8 @@
 
 當然，您也可以設定語言。下面點選的是設定軟體語言的選項。
 
-<img width="1309" height="864" alt="image-20260331181355306" src="https://github.com/user-attachments/assets/95f006af-56d7-420d-8812-8ec167019b71" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/767f8d11-f342-40dc-be14-42acebe94057" />
+
 
 
 
@@ -147,7 +150,8 @@
 在專案介面中，您可以開始建立項目
 
 
-<img width="1304" height="859" alt="image-20260331181508488" src="https://github.com/user-attachments/assets/e6860c28-5a09-4313-875b-04d5c18f432d" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/41013f10-cb03-4174-9da5-055f66868f90" />
+
 
 
 
@@ -159,10 +163,12 @@
 
 下面顯示建置的過程，如下：
 
-<img width="1308" height="853" alt="image-20260331181707163" src="https://github.com/user-attachments/assets/043a58bb-3dd7-4930-bb1e-a7550e836b97" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/9931a9de-894b-44d0-88e9-00de2bb31b16" />
 
 
-<img width="1301" height="859" alt="image-20260331181754200" src="https://github.com/user-attachments/assets/c8c37427-1b43-4702-92fc-4b13660ae7ab" />
+
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/84ab8dfd-d815-4542-b42b-acda8e947b7e" />
+
 
 
 
@@ -186,14 +192,14 @@
 對於目前軟體而言，您如果操作過程中，存在一些細節問題，可以透過 關於軟體，查閱相關說明文件。
 
 
-<img width="1302" height="861" alt="image-20260331181959363" src="https://github.com/user-attachments/assets/5887aba2-e2e7-41e6-ae7b-44d47f156cec" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/a70e8cbb-e705-4cf5-b4ae-40eeb4dc4207" />
+
 
 
 
 使用說明
 
-<img width="1303" height="861" alt="image-20260331182024547" src="https://github.com/user-attachments/assets/6488cf81-b53a-4bff-9000-8fab523b1a3a" />
-
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/1c8cc651-243d-4d5c-9739-65d3fe70f8a1" />
 
 
 
