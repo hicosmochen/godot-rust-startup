@@ -95,7 +95,8 @@
 ### 제1절: 메인 인터페이스
 
 
-<img width="1326" height="872" alt="image-20260331181015689" src="https://github.com/user-attachments/assets/285f37f1-ebd1-4a7a-b825-6642dec4f364" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/8f14b585-ab9d-4752-abe8-83288b3b0e06" />
+
 
 
 상단에 있는 메인 인터페이스에는 주로 여러 옵션 메뉴가 있으며, 여기에서 선택을 할 수 있습니다.
@@ -110,7 +111,8 @@
 
 ### 第02节 配置选择
 
-<img width="1310" height="862" alt="image-20260331181135850" src="https://github.com/user-attachments/assets/2b2c807f-eb2b-42b8-8114-22274c437dca" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/bb1bac45-8007-4729-8a2f-22e709076745" />
+
 
 
 
@@ -124,7 +126,8 @@ Rust 설치 경로와 Godot 실행 파일 경로를 선택할 수 있습니다.
 
 물론 언어도 설정할 수 있습니다. 아래 옵션을 클릭하여 소프트웨어 언어를 설정하세요.
 
-<img width="1309" height="864" alt="image-20260331181355306" src="https://github.com/user-attachments/assets/95f006af-56d7-420d-8812-8ec167019b71" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/0d15fb84-6fa5-4ff0-b120-cfbc587f37b3" />
+
 
 
 
@@ -143,7 +146,8 @@ Rust 설치 경로와 Godot 실행 파일 경로를 선택할 수 있습니다.
 프로젝트 인터페이스에서 프로젝트 구축을 시작할 수 있습니다.
 
 
-<img width="1304" height="859" alt="image-20260331181508488" src="https://github.com/user-attachments/assets/e6860c28-5a09-4313-875b-04d5c18f432d" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/7028bf26-b075-4940-afdb-f6d791de9ecc" />
+
 
 
 
@@ -151,10 +155,12 @@ Rust 설치 경로와 Godot 실행 파일 경로를 선택할 수 있습니다.
 
 빌드 과정은 아래와 같습니다.
 
-<img width="1308" height="853" alt="image-20260331181707163" src="https://github.com/user-attachments/assets/043a58bb-3dd7-4930-bb1e-a7550e836b97" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/b80af6c2-5e59-4cfb-86d4-0b334e4fe4d2" />
 
 
-<img width="1301" height="859" alt="image-20260331181754200" src="https://github.com/user-attachments/assets/c8c37427-1b43-4702-92fc-4b13660ae7ab" />
+
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/37731746-1733-4cb6-86de-83504d56da04" />
+
 
 
 
@@ -178,11 +184,13 @@ Rust 설치 경로와 Godot 실행 파일 경로를 선택할 수 있습니다.
 소프트웨어 사용 중 문제가 발생하면 "소프트웨어 정보" 섹션의 관련 문서를 참조하십시오.
 
 
-<img width="1302" height="861" alt="image-20260331181959363" src="https://github.com/user-attachments/assets/5887aba2-e2e7-41e6-ae7b-44d47f156cec" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/91a89b9e-9fe5-4511-982b-d0e03f2a40f0" />
+
 
 사용 설명서
 
-<img width="1303" height="861" alt="image-20260331182024547" src="https://github.com/user-attachments/assets/6488cf81-b53a-4bff-9000-8fab523b1a3a" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/3c9fc6b8-6685-499b-8f88-438efefb0bc6" />
+
 
 
 
