@@ -94,7 +94,8 @@ The entire process takes only 2 minutes.
 
 ### Section 01: Main Interface
 
-<img width="1326" height="872" alt="image-20260331181015689" src="https://github.com/user-attachments/assets/285f37f1-ebd1-4a7a-b825-6642dec4f364" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/b6de0058-5217-48eb-a383-9ef39b8f488b" />
+
 
 
 The main interface, at the top, mainly contains several option menus where you can make choices.
@@ -109,7 +110,8 @@ The main interface, at the top, mainly contains several option menus where you c
 
 ### Section 02 Configuration Selection
 
-<img width="1310" height="862" alt="image-20260331181135850" src="https://github.com/user-attachments/assets/2b2c807f-eb2b-42b8-8114-22274c437dca" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/cf612b11-e423-44e0-8bd0-ed1d4f0d02be" />
+
 
 
 
@@ -123,7 +125,8 @@ Where:
 
 Of course, you can also set the language. The option to set the software language is clicked below.
 
-<img width="1309" height="864" alt="image-20260331181355306" src="https://github.com/user-attachments/assets/95f006af-56d7-420d-8812-8ec167019b71" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/021e0b0b-2e1e-4810-8b84-f9f4f614467b" />
+
 
 
 
@@ -142,7 +145,8 @@ Of course, you can also set the language. The option to set the software languag
 In the project interface, you can begin building your project.
 
 
-<img width="1304" height="859" alt="image-20260331181508488" src="https://github.com/user-attachments/assets/e6860c28-5a09-4313-875b-04d5c18f432d" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/e44c68f9-d921-46eb-8b4c-d82def50555c" />
+
 
 
 
@@ -154,10 +158,12 @@ Follow the button sequence to complete the project build. Wait until the progres
 
 The build process is shown below:
 
-<img width="1308" height="853" alt="image-20260331181707163" src="https://github.com/user-attachments/assets/043a58bb-3dd7-4930-bb1e-a7550e836b97" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/bedbebcc-0aca-4aac-96eb-cff47c98012d" />
 
 
-<img width="1301" height="859" alt="image-20260331181754200" src="https://github.com/user-attachments/assets/c8c37427-1b43-4702-92fc-4b13660ae7ab" />
+
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/f68fb5cb-0072-48fd-ab79-49f43e0d6413" />
+
 
 
 
@@ -181,13 +187,15 @@ When all operations are complete, the system will display "All operations are co
 If you encounter any issues while using the software, you can refer to the relevant documentation in the "About the Software" section.
 
 
-<img width="1302" height="861" alt="image-20260331181959363" src="https://github.com/user-attachments/assets/5887aba2-e2e7-41e6-ae7b-44d47f156cec" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/d0c7fbda-1760-4685-a4b8-3773d73ba19c" />
+
 
 
 
 Instructions for Use
 
-<img width="1303" height="861" alt="image-20260331182024547" src="https://github.com/user-attachments/assets/6488cf81-b53a-4bff-9000-8fab523b1a3a" />
+<img width="1282" height="838" alt="image" src="https://github.com/user-attachments/assets/c720b0f3-a50b-4d62-8bd1-f5713079d985" />
+
 
 
 
